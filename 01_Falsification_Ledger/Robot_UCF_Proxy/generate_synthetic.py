@@ -1,5 +1,5 @@
 """
-Data Gen: Synthetic eDSL Corpus for Aether-β v2.0 Syntax Prior.
+Data Gen: Synthetic eDSL Corpus for Aether-beta v2.0 Syntax Prior.
 Generates valid expressions based on Grammar v0 rules.
 """
 import json

@@ -142,7 +142,7 @@ def train_gamma(
         valid_val_list.append(valid_val)
 
     if not latents_train_list:
-        assess FileNotFoundError(f"Real data not found at {data_dir}. Halting execution.")
+        raise FileNotFoundError(f"Real data not found at {data_dir}. Halting execution.")
         
     # Pad latents and masks to the global maximum N_max across all scenes
     max_N = max(l.shape[1] for l in latents_train_list + latents_val_list)
@@ -326,15 +326,7 @@ def train_gamma(
             pig_loss_avg = total_pig_loss / len(train_loader)
             ce_loss_avg = total_ce_loss / len(text_loader)
             print(f"Epoch {epoch:2d} | Flow Loss: {flow_loss_avg:.4f} | PIG Loss: {pig_loss_avg:.4f} | Text CE: {ce_loss_avg:.4f}")
-            
-            # import tracker (redacted)
-            if None is not None:
-                # tracker.log({
-                    "epoch": epoch,
-                    "train/flow_loss": flow_loss_avg,
-                    "train/pig_loss": pig_loss_avg,
-                    "train/text_ce": ce_loss_avg
-                })
+            # External experiment tracking removed from the public scaffold.
             
     # VALIDATION
     pipeline.eval()
@@ -391,14 +383,7 @@ def train_gamma(
         # Log InfoNCE denominator specifically as requested
         infoNCE_denominator = Z_future.shape[0] if len(z_present_list) > 0 else 0
         print(f"InfoNCE Denominator (val): {infoNCE_denominator}")
-        
-        # import tracker (redacted)
-        if None is not None:
-            # tracker.log({
-                "val/pig_score": val_pig,
-                "val/lean4_rate": val_lean4,
-                "val/infonce_denominator": infoNCE_denominator
-            })
+        # External experiment tracking removed from the public scaffold.
     
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({'pipeline': pipeline.state_dict(), 'autoencoder': autoencoder.state_dict()}, checkpoint_path)

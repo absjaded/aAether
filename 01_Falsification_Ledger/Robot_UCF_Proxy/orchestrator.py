@@ -28,7 +28,7 @@ class CycleResult:
     certificate_root: str
     latency_ms: float
     any_degraded: bool
-    proof_rho: float        # ρ ∈ [0,1]; needed for PROCEED-leak / pass-rate metrics
+    proof_rho: float        # rho  [0,1]; needed for PROCEED-leak / pass-rate metrics
     proof_term_id: str      # named theorem or diagnostic; needed for typed-diagnostic coverage
 
 
@@ -93,7 +93,7 @@ class NISPOrchestrator:
         cycle_id = str(uuid.uuid4())
         t0 = self._clock()
 
-        # Hypothesis branch (L1 → L2) and ground-truth branch (L3 unconditional)
+        # Hypothesis branch (L1 -> L2) and ground-truth branch (L3 unconditional)
         # run concurrently. eDSL-term-driven L3 attention requires L2 to complete
         # first, breaking concurrency; unconditional polling is Phase 1's correct choice.
         (latent, edsl_expr), proof = await asyncio.gather(

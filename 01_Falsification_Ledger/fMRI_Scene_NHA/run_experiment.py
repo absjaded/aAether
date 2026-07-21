@@ -1,5 +1,5 @@
 """
-aether_lab/run_experiment.py — Execution script for Aether-Gamma.
+run_experiment.py - execution scaffold for Aether-Gamma.
 
 Enforces the Zero Label Mandate and strict temporal validation protocols.
 """
@@ -55,7 +55,7 @@ def write_manifest(args, run_id: str):
 def log_experiment(manifest, pig_score: float, lean4_rate: float, info_denom: int):
     """Appends the rigorous academic result to the lab recordbook."""
     LAB_recordBOOKS_DIR.mkdir(parents=True, exist_ok=True)
-    log_path = LAB_recordBOOKS_DIR / "EXPERIMENT_LOG.md"
+    log_path = LAB_recordBOOKS_DIR / "experiment_log.txt"
     
     entry = f"""
 ## Run: {manifest['run_id']}
@@ -66,10 +66,10 @@ def log_experiment(manifest, pig_score: float, lean4_rate: float, info_denom: in
 - **Metric:** PIG = {pig_score:.4f} nats
 - **InfoNCE Denominator (val):** {info_denom}
 - **Lean 4 Discharge Rate:** {lean4_rate if isinstance(lean4_rate, str) else f'{lean4_rate * 100:.1f}%'}
-- **ΔPIG vs. γ baseline:** [Pending] (Kaggle Agent to calculate)
+- Delta-PIG vs. gamma baseline: pending
 - **Temporal split method:** Block Splitting (Gap: 10 frames)
-- **RL Algorithm:** [Pending] (Kaggle Agent to implement PPO)
-- **Status:** [Pending] (Kaggle Agent to assessment)
+- RL algorithm: pending
+- Status: pending
 - **Description:** Executed Aether-Gamma pipeline according to academic protocols.
 ---
 """
@@ -98,18 +98,13 @@ def main() -> None:
     print("="*60)
 
     # 1. Enforce determinism
-    torch.manual_rng_state(args.rng_state)
-    np.random.rng_state(args.rng_state)
+    torch.manual_seed(args.rng_state)
+    np.random.seed(args.rng_state)
 
     # 2. Pre-flight manifest
     manifest = write_manifest(args, run_id)
     
-    # import tracker (redacted)
-    # tracker.init(
-        project="aether-decoder",
-        name=run_id,
-        config=manifest
-    )
+    # Optional experiment tracking was removed from the public scaffold.
 
     # 3. Execute
     ckpt_path = CHECKPOINT_DIR / f"{run_id}.pt"

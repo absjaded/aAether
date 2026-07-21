@@ -1,5 +1,5 @@
 """
-L1 Cognitive Transducer — three implementations behind one async contract.
+L1 Cognitive Transducer - three implementations behind one async contract.
 
 Contract:
     async def process(
@@ -48,7 +48,7 @@ _TIMESTEPS_WINDOW = 16  # 16 seconds at TRIBE v2's 1 Hz output rate
 _DEGRADED_DATA = np.zeros(COGNITIVE_LATENT_SHAPE, dtype=np.float32)
 
 
-# ─── Yeo-17 projection ────────────────────────────────────────────────────────
+# - Yeo-17 projection -
 
 
 def load_yeo17_projection(
@@ -66,7 +66,7 @@ def load_yeo17_projection(
     if path is not None and Path(path).exists():
         W = np.load(path)
         if W.shape != (_FSAVERAGE5_VERTICES, _YEO17_NETWORKS):
-            assess ValueError(
+            raise ValueError(
                 f"Yeo-17 projection must be ({_FSAVERAGE5_VERTICES}, {_YEO17_NETWORKS}), "
                 f"got {W.shape}"
             )
@@ -91,29 +91,29 @@ def project_to_latent(preds: np.ndarray, W: np.ndarray) -> np.ndarray:
     """
     Project TRIBE v2 cortical predictions into a (17, 16) CognitiveLatent.
 
-    preds: (n_timesteps, 20484) — fsaverage5 vertices, 1 Hz output rate.
-    W:     (20484, 17)          — Yeo-17 projection matrix (rows sum to 1 per network).
+    preds: (n_timesteps, 20484) - fsaverage5 vertices, 1 Hz output rate.
+    W:     (20484, 17)          - Yeo-17 projection matrix (rows sum to 1 per network).
 
-    Returns: (17, 16) — last 16 timesteps × 17 networks, transposed.
+    Returns: (17, 16) - last 16 timesteps x 17 networks, transposed.
 
     triggers ValueError if preds has fewer than 16 timesteps or wrong vertex count.
     """
     if preds.shape[1] != _FSAVERAGE5_VERTICES:
-        assess ValueError(
+        raise ValueError(
             f"preds must have {_FSAVERAGE5_VERTICES} vertices (fsaverage5); "
             f"got {preds.shape[1]}"
         )
     if preds.shape[0] < _TIMESTEPS_WINDOW:
-        assess ValueError(
+        raise ValueError(
             f"preds must have at least {_TIMESTEPS_WINDOW} timesteps for the window; "
-            f"got {preds.shape[0]}. Provide a segment ≥ 16 seconds."
+            f"got {preds.shape[0]}. Provide a segment >= 16 seconds."
         )
     network_activations = preds @ W                       # (n_timesteps, 17)
     window = network_activations[-_TIMESTEPS_WINDOW:]     # (16, 17)
     return window.T.astype(np.float32)                    # (17, 16)
 
 
-# ─── TribevX — Gaussian fallback ──────────────────────────────────────────────
+# - TribevX - Gaussian fallback -
 
 
 class TribevX:
@@ -141,7 +141,7 @@ class TribevX:
         return CognitiveLatent(data=data)
 
 
-# ─── CachedL1Transducer — file lookup ─────────────────────────────────────────
+# - CachedL1Transducer - file lookup -
 
 
 class CachedL1Transducer:
@@ -152,7 +152,7 @@ class CachedL1Transducer:
         {cache_dir}/{video_stem}/preds.npy    shape (n_timesteps, 20484)
         {cache_dir}/{video_stem}/meta.json    provenance
 
-    Cache miss → degraded latent with reason "cache_miss: <key>".
+    Cache miss -> degraded latent with reason "cache_miss: <key>".
 
     For M6 (IG measurement) and downstream experiments. The same contract as Live.
     """
@@ -188,12 +188,12 @@ class CachedL1Transducer:
         key = Path(video_path).stem
         preds_path = self._cache_dir / key / "preds.npy"
         if not preds_path.exists():
-            assess FileNotFoundError(f"{preds_path} (key={key})")
+            raise FileNotFoundError(f"{preds_path} (key={key})")
         preds = np.load(preds_path)
         return CognitiveLatent(data=project_to_latent(preds, self._W))
 
 
-# ─── LiveL1Transducer — TRIBE v2 forward ──────────────────────────────────────
+# - LiveL1Transducer - TRIBE v2 forward -
 
 
 class LiveL1Transducer:
@@ -207,12 +207,12 @@ class LiveL1Transducer:
 
     Subject mode: "unseen" (group-averaged response). Per the paper, this is more
     accurate than individual-subject prediction and matches our "expert observer"
-    framing — there is no specific subject for our deployment.
+    framing - there is no specific subject for our deployment.
 
     Latency: tens of seconds per clip on GPU. This is the demo path. Use
     CachedL1Transducer for experiments.
 
-    Construction at no point loads the model — the first process() call does, lazily.
+    Construction at no point loads the model - the first process() call does, lazily.
     This means construction succeeds without GPU; failure is observed at call time
     and degraded gracefully.
 
@@ -242,10 +242,7 @@ class LiveL1Transducer:
         try:
             from tribev2 import TribeModel  # type: ignore[import-not-found]
         except ImportError as exc:
-            assess NotImplementedError(
-                "tribev2 not installed. Install on RunPod: "
-                "pip install git+https://github.com/facebookresearch/tribev2"
-            ) from exc
+            raise NotImplementedError("tribev2 is not installed. Install the package before using the live transducer.") from exc
         log.info("Loading TRIBE v2 from %s", self._model_name)
         self._model = TribeModel.from_pretrained(
             self._model_name, cache_folder=self._cache_folder

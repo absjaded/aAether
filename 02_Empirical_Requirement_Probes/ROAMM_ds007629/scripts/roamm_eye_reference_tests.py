@@ -217,9 +217,9 @@ def cross_run_loso(df_all: pd.DataFrame, include_time: bool, min_pos: int, seed:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Run ROAMM shared-reference and calibration-cost tests")
+    ap = argparse.ArgumentParser(description="Run local ROAMM shared-reference and calibration-cost tests")
     ap.add_argument("--csv", default="data/roamm_epochs_44subj.csv.gz")
-    ap.add_argument("--out", default="artifacts/roamm_reference_tests")
+    ap.add_argument("--out", default="work/roamm_local_reference_tests")
     ap.add_argument("--min-pos", type=int, default=16)
     ap.add_argument("--calibration-repeats", type=int, default=200)
     ap.add_argument("--include-time", action=argparse.BooleanOptionalAction, default=True)

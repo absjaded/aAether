@@ -4,15 +4,15 @@ dual_contrast.py
 Runs on the SIGN-CORRECTED source arrays (_Xsrc.npy) produced by the
 patched extractor. Two contrasts, in parallel, answering two questions:
 
-  CONTRAST A — elicited_response-source GFP  (the validation arm)
-    Does the cohort-tier mismatch signal — proven in sensor space —
+  CONTRAST A - elicited_response-source GFP  (the validation arm)
+    Does the cohort-tier mismatch signal - proven in sensor space -
     SURVIVE the corrected source localization? Sign-agnostic GFP, SNR-
     matched null, same design as the sensor gatekeeper but on ROIs.
     PASS = real > null across cohort. Confirms the localization fixes
     preserved the signal (i.e., mean_flip un-cancelled the elicited_response).
 
-  CONTRAST B — Covariance-source RGD  (the revival arm)
-    Does the RIEMANNIAN framework — six-times null on contaminated data —
+  CONTRAST B - Covariance-source RGD  (the revival arm)
+    Does the RIEMANNIAN framework - six-times null on contaminated data -
     come back to life once the sign is fixed? ERPCovariances on Tier-1+2
     ROIs, LOO distance-to-Target-mean, Lure-vs-Target gap, cohort tier.
     This decides whether the geometry-based structural advantage was WRONG or just STARVED
@@ -28,7 +28,7 @@ DECISION TABLE
     A null         : the localization fixes did NOT recover the signal in
                      source space. Stay in sensor space for the existence
                      proof; debug the source pipeline separately. (Do not
-                     read B if A is null — B inherits the same source data.)
+                     read B if A is null - B inherits the same source data.)
 
 Reads:  {DATA_DIR}/{subj}_Xsrc.npy   (n_trials, 68, n_time), sign-corrected
         {DATA_DIR}/{subj}_y_meta.npy (n_trials, 4) [memoryType,targetType,respTime,isCorrect]
@@ -90,7 +90,7 @@ def load_subject(subj):
 
 
 # ----------------------------------------------------------------------
-# CONTRAST A — elicited_response-source GFP, SNR-matched (sign-agnostic)
+# CONTRAST A - elicited_response-source GFP, SNR-matched (sign-agnostic)
 # ----------------------------------------------------------------------
 def contrast_a(X, tt, t):
     Xt = baseline_correct(X[tt == 1], t)
@@ -111,7 +111,7 @@ def contrast_a(X, tt, t):
 
 
 # ----------------------------------------------------------------------
-# CONTRAST B — covariance-source RGD, ERPCovariances + LOO (the revival test)
+# CONTRAST B - covariance-source RGD, ERPCovariances + LOO (the revival test)
 # ----------------------------------------------------------------------
 def contrast_b(X, tt, t, roi_idx):
     m = win_mask(t, MISMATCH_WIN)
@@ -146,7 +146,7 @@ def main():
     roi_names = np.load(os.path.join(DATA_DIR, 'roi_names.npy'))
     roi_idx = [i for i, n in enumerate(roi_names)
                if str(n).rsplit('-', 1)[0] in TIER12]
-    print(f"Dual contrast — {len(subjects)} subjects | Tier-1+2 ROIs: {len(roi_idx)}\n")
+    print(f"Dual contrast - {len(subjects)} subjects | Tier-1+2 ROIs: {len(roi_idx)}\n")
 
     A_real, A_null, B_d, kept = [], [], [], []
     for i, subj in enumerate(subjects):
@@ -167,7 +167,7 @@ def main():
     A_delta = A_real - A_null
 
     print("\n" + "=" * 64)
-    print("CONTRAST A — elicited_response-SOURCE GFP  (does the signal survive localization?)")
+    print("CONTRAST A - elicited_response-SOURCE GFP  (does the signal survive localization?)")
     print("=" * 64)
     na = int((A_delta > 0).sum())
     print(f"  subjects:            {len(A_delta)}")
@@ -177,7 +177,7 @@ def main():
         print(f"  Wilcoxon p:          {wilcoxon(A_delta).pvalue:.4e}")
 
     print("\n" + "=" * 64)
-    print("CONTRAST B — COVARIANCE-SOURCE RGD  (does the geometry revive?)")
+    print("CONTRAST B - COVARIANCE-SOURCE RGD  (does the geometry revive?)")
     print("=" * 64)
     nb = int((B_d > 0).sum())
     print(f"  subjects:            {len(B_d)}")

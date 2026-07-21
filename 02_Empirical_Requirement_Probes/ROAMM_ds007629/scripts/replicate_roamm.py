@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 from dataclasses import asdict
@@ -76,7 +76,7 @@ def main() -> None:
     ap.add_argument("--balanced", action=argparse.BooleanOptionalAction, default=True)
     ap.add_argument("--include-eye", action=argparse.BooleanOptionalAction, default=True)
     ap.add_argument("--include-time", action=argparse.BooleanOptionalAction, default=True)
-    ap.add_argument("--out-prefix", default="artifacts/results/roamm_replication")
+    ap.add_argument("--out-prefix", default="work/results/roamm_replication")
     args = ap.parse_args()
 
     result, personal = run_once(args)

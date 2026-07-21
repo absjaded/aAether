@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 from pathlib import Path
@@ -169,7 +169,7 @@ def main() -> None:
     ap.add_argument("--sign-perm", type=int, default=100000)
     ap.add_argument("--include-eye", action=argparse.BooleanOptionalAction, default=True)
     ap.add_argument("--include-time", action=argparse.BooleanOptionalAction, default=True)
-    ap.add_argument("--out-prefix", default="artifacts/results/roamm_idiosyncrasy_gbm")
+    ap.add_argument("--out-prefix", default="work/results/roamm_idiosyncrasy_gbm")
     args = ap.parse_args()
 
     out, summary = run(args)

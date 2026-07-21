@@ -260,7 +260,7 @@ def within_subject_filterbank(idx: pd.DataFrame, band_covs: dict[str, np.memmap]
 def main() -> None:
     ap = argparse.ArgumentParser(description="ROAMM filter-bank Riemannian tests")
     ap.add_argument("--root", default="data/roamm_eeg10s")
-    ap.add_argument("--out", default="artifacts/roamm_riemann_filterbank_eeg10s")
+    ap.add_argument("--out", default="work/roamm_riemann_filterbank_eeg10s")
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--calibration-repeats", type=int, default=200)
     args = ap.parse_args()

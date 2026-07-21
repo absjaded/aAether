@@ -8,12 +8,12 @@ n=75) as the core representation, and adds the five Document 2 guards
 that convert "we found a gap" into "the gap is real, specific, and
 survives all alternative explanation":
 
-  Guard 1 — Split-half reference stability check (§4 Guard 2)
-  Guard 2 — Three-way ordinal: Lure > Non-Target ≈ Target (§6b)
-  Guard 3 — RT-regression survival (§6a)
-  Guard 4 — Motor-ROI negative control (§6d)
-  Guard 5 — 1000-shuffle cohort permutation null (§7) ~0.8667
-  Bonus  — Leave-one-subject-out influence (Cook's-distance analog)
+  Guard 1 - Split-half reference stability check (section4 Guard 2)
+  Guard 2 - Three-way ordinal: Lure > Non-Target approx Target (section6b)
+  Guard 3 - RT-regression survival (section6a)
+  Guard 4 - Motor-ROI negative control (section6d)
+  Guard 5 - 1000-shuffle cohort permutation null (section7) ~0.8667
+  Bonus  - Leave-one-subject-out influence (Cook's-distance analog)
 
 Pre-registered, frozen design (do not tune between guards):
   Window  : MISMATCH_WIN = (0.25, 0.50) s post-stimulus
@@ -22,7 +22,7 @@ Pre-registered, frozen design (do not tune between guards):
   Estimator: ERPCovariances(classes=[1], estimator='lwf')
   Distances: LOO for Targets, full-ref for NT and Lure
 
-Pass condition (pre-declared, §8):
+Pass condition (pre-declared, section8):
   All five guards must hold. If all five hold: MVP-0 STANDS.
 ========================================================================
 """
@@ -41,10 +41,10 @@ from pyriemann.estimation import ERPCovariances
 from pyriemann.utils.mean import mean_riemann
 from pyriemann.utils.distance import distance_riemann
 
-# ── Config (frozen) ───────────────────────────────────────────────────────────
-# Kaggle paths — dataset must be uploaded as 'nsvd-fusion'
-DATA_DIR     = '/kaggle/input/nsvd-fusion'
-RESULTS_DIR  = '/kaggle/working'
+# - Config (frozen) -
+# Environment-neutral defaults. Override with HCP_NBACK_DATA_DIR and HCP_NBACK_RESULTS_DIR.
+DATA_DIR = os.getenv('HCP_NBACK_DATA_DIR', os.path.join(os.path.dirname(__file__), '..', '.data', 'hcp_nback_meg'))
+RESULTS_DIR = os.getenv('HCP_NBACK_RESULTS_DIR', os.path.join(os.path.dirname(__file__), '..', '.artifacts', 'hcp_nback_meg'))
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 FS           = 250
@@ -82,7 +82,7 @@ SUBJECTS = [
     '715950','725751','735148','783462','814649',
 ]
 
-# ── Utilities ─────────────────────────────────────────────────────────────────
+# - Utilities -
 
 def time_axis(n):
     return (np.arange(n) - ONSET_SAMPLE) / FS
@@ -116,7 +116,7 @@ def residualize_rt(rgd, rt):
         resid[valid] = rgd[valid] - np.polyval(coef, rt[valid])
     return resid, int(valid.sum())
 
-# ── Core per-subject ERPCov geometry ──────────────────────────────────────────
+# - Core per-subject ERPCov geometry -
 
 def compute_erpcov_distances(X_full, y_meta, roi_idx):
     """
@@ -124,9 +124,9 @@ def compute_erpcov_distances(X_full, y_meta, roi_idx):
 
     Parameters
     ----------
-    X_full  : (N, 68, T) — full sign-corrected source epochs
-    y_meta  : (N, 4)     — [memType, tgtType, rt, acc]
-    roi_idx : list[int]  — pre-registered ROI indices
+    X_full  : (N, 68, T) - full sign-corrected source epochs
+    y_meta  : (N, 4)     - [memType, tgtType, rt, acc]
+    roi_idx : list[int]  - pre-registered ROI indices
 
     Returns
     -------
@@ -153,7 +153,7 @@ def compute_erpcov_distances(X_full, y_meta, roi_idx):
     erp  = ERPCovariances(classes=[1], estimator='lwf')
     covs = condition_spd(erp.fit_transform(Xw, tt))
 
-    # Split-half stability on Target reference (§4 Guard 2)
+    # Split-half stability on Target reference (section4 Guard 2)
     rng = np.random.default_rng(rng_state)
     perm = rng.permutation(len(t_idx))
     half = len(t_idx) // 2
@@ -178,7 +178,7 @@ def compute_erpcov_distances(X_full, y_meta, roi_idx):
         ref = mean_riemann(covs[np.delete(t_idx, k)])
         d_target[k] = distance_riemann(ref, covs[i])
 
-    # Full-ref distances for NT and Lure (unbiased — at no point in ref)
+    # Full-ref distances for NT and Lure (unbiased - at no point in ref)
     ref_all   = mean_riemann(covs[t_idx])
     d_nt      = np.array([distance_riemann(ref_all, covs[i]) for i in nt_idx])
     d_lure    = np.array([distance_riemann(ref_all, covs[i]) for i in l_idx])
@@ -200,7 +200,7 @@ def compute_erpcov_distances(X_full, y_meta, roi_idx):
     }
 
 
-# ── Cohort permutation null (§7) — parallelized across 2 workers ──────────────
+# - Cohort permutation null (section7) - parallelized across 2 workers -
 
 def _run_perm_batch(args):
     """Top-tier worker: runs a batch of permutations. Module-tier for pickling."""
@@ -238,15 +238,15 @@ def _run_perm_batch(args):
 
 def cohort_permutation(loaded_results, n_perms=N_PERMS):
     """
-    1000-shuffle cohort-tier permutation (§7).
+    1000-shuffle cohort-tier permutation (section7).
     Parallelized: splits into MAX_WORKERS batches of n_perms//MAX_WORKERS each.
-    Logic identical to serial version — rng_states differ per batch to avoid repetition.
+    Logic identical to serial version - rng_states differ per batch to avoid repetition.
     """
     from concurrent.futures import ProcessPoolExecutor
     print(f'  Running {n_perms} cohort permutations (max_workers={MAX_WORKERS})...')
     observed = float(np.mean([r['gap'] for r in loaded_results]))
 
-    # Strip non-picklable keys — workers only need covs and tt
+    # Strip non-picklable keys - workers only need covs and tt
     loaded_simple = [{'covs': r['covs'], 'tt_pooled': r['tt_pooled']} for r in loaded_results]
 
     batch_size = n_perms // MAX_WORKERS
@@ -263,7 +263,7 @@ def cohort_permutation(loaded_results, n_perms=N_PERMS):
     return observed, null, p_val
 
 
-# ── Leave-one-subject-out influence ───────────────────────────────────────────
+# - Leave-one-subject-out influence -
 
 def loso_influence(stable_results):
     """Cook's-distance analog: how much does dropping one subject move d?"""
@@ -276,11 +276,11 @@ def loso_influence(stable_results):
     return np.array(influences)
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# - Main -
 
 def main():
     print('=' * 68)
-    print('AETHER MVP-0 CLOSEOUT — ERPCovariances + Document 2 Guards')
+    print('AETHER MVP-0 CLOSEOUT - ERPCovariances + Document 2 Guards')
     print('=' * 68)
 
     # Load ROI index from saved roi_names
@@ -293,8 +293,8 @@ def main():
     print(f'Subjects       : {len(SUBJECTS)}')
     print()
 
-    # ── Phase 1: Per-subject primary analysis ─────────────────────────────────
-    print('── Phase 1: Per-subject ERPCov distances (Tier-1+2) ──')
+    # - Phase 1: Per-subject primary analysis -
+    print('- Phase 1: Per-subject ERPCov distances (Tier-1+2) -')
     results, unstable_list, skipped = [], [], []
 
     for subj in SUBJECTS:
@@ -306,13 +306,13 @@ def main():
 
         r = compute_erpcov_distances(X, y, tier12_idx)
         if r is None:
-            print(f'  [{subj}] SKIP — too few trials'); skipped.append(subj); continue
+            print(f'  [{subj}] SKIP - too few trials'); skipped.append(subj); continue
 
         r['subj'] = subj
         results.append(r)
-        stab = '✓' if r['stable'] else '✗ UNSTABLE'
+        stab = 'PASS' if r['stable'] else 'FAIL UNSTABLE'
         print(f"  [{subj}]  n=({r['n_t']}T/{r['n_nt']}NT/{r['n_l']}L)  "
-              f"ref={stab}(Δ={r['delta_frac']:.3f})  "
+              f"ref={stab}(Delta={r['delta_frac']:.3f})  "
               f"T={r['d_target'].mean():.4f}  "
               f"NT={r['d_nt'].mean():.4f}  "
               f"L={r['d_lure'].mean():.4f}  "
@@ -342,18 +342,18 @@ def main():
     print(f'  Gap > 0                  : {n_pos}/{n} ({100*n_pos/n:.0f}%)')
     print(f'  Wilcoxon p (parametric)  : {wilcoxon(gaps).pvalue:.4e}')
     print(f'  Ordinal T/NT/L means     : {mean_T:.4f} / {mean_NT:.4f} / {mean_L:.4f}')
-    print(f'  Ordinal L>NT≈T           : {"✓" if ordinal_ok else "✗"}')
+    print(f'  Ordinal L>NTapproxT           : {"PASS" if ordinal_ok else "FAIL"}')
 
-    # ── Phase 2: RT-regression guard ──────────────────────────────────────────
-    print('\n── Phase 2: RT-regression guard ──')
+    # - Phase 2: RT-regression guard -
+    print('\n- Phase 2: RT-regression guard -')
     gaps_rt  = np.array([r['gap_rt'] for r in stable_results])
     n_pos_rt = int((gaps_rt > 0).sum())
     print(f'  RT-residualized d        : {gaps_rt.mean():+.4f}')
     print(f'  Gap > 0 (RT-resid)       : {n_pos_rt}/{n} ({100*n_pos_rt/n:.0f}%)')
     rt_guard_ok = gaps_rt.mean() > 0 and n_pos_rt > n * 0.5
 
-    # ── Phase 3: Motor-ROI negative control ───────────────────────────────────
-    print('\n── Phase 3: Motor-ROI negative control ──')
+    # - Phase 3: Motor-ROI negative control -
+    print('\n- Phase 3: Motor-ROI negative control -')
     motor_results = []
     for subj in SUBJECTS:
         try:
@@ -370,51 +370,51 @@ def main():
         m_gaps  = np.array([r['gap'] for r in motor_results])
         m_n_pos = int((m_gaps > 0).sum())
         print(f'  Motor subjects           : {len(motor_results)}')
-        print(f'  Mean motor d             : {m_gaps.mean():+.4f}  (expected ≈ 0)')
+        print(f'  Mean motor d             : {m_gaps.mean():+.4f}  (expected approx 0)')
         print(f'  Motor gap > 0            : {m_n_pos}/{len(motor_results)} '
               f'({100*m_n_pos/len(motor_results):.0f}%)')
         motor_null_ok = (abs(m_gaps.mean()) < 0.15 and
                          m_n_pos < len(motor_results) * 0.65)
-        print(f'  Motor null               : {"✓ CLEAN" if motor_null_ok else "✗ CONTAMINATED"}')
+        print(f'  Motor null               : {"PASS CLEAN" if motor_null_ok else "FAIL CONTAMINATED"}')
 
-    # ── Phase 4: 1000-shuffle cohort permutation ───────────────────────────────
-    print(f'\n── Phase 4: Cohort permutation ({N_PERMS} shuffles) ──')
+    # - Phase 4: 1000-shuffle cohort permutation -
+    print(f'\n- Phase 4: Cohort permutation ({N_PERMS} shuffles) -')
     observed, null_dist, perm_p = cohort_permutation(stable_results)
     print(f'  Observed cohort d        : {observed:+.4f}')
-    print(f'  Null mean ± SD           : {null_dist.mean():+.4f} ± {null_dist.std():.4f}')
+    print(f'  Null mean +/- SD           : {null_dist.mean():+.4f} +/- {null_dist.std():.4f}')
     print(f'  Two-sided perm p         : {perm_p:.4f}')
     perm_ok = perm_p < 0.05
 
-    # ── Phase 5: Leave-one-subject-out influence ───────────────────────────────
-    print('\n── Phase 5: Leave-one-subject-out influence ──')
+    # - Phase 5: Leave-one-subject-out influence -
+    print('\n- Phase 5: Leave-one-subject-out influence -')
     influences = loso_influence(stable_results)
     worst_idx  = int(np.argmax(influences))
     worst_subj = stable_results[worst_idx]['subj']
-    print(f'  Max influence subject    : {worst_subj} (Δd = {influences[worst_idx]:.4f})')
+    print(f'  Max influence subject    : {worst_subj} (Deltad = {influences[worst_idx]:.4f})')
     print(f'  Mean influence           : {influences.mean():.4f}')
     print(f'  d without most-inf. subj: {np.delete(gaps, worst_idx).mean():+.4f}')
     robust = bool(np.delete(gaps, worst_idx).mean() > 0)
-    print(f'  Robust to removal        : {"✓" if robust else "✗"}')
+    print(f'  Robust to removal        : {"PASS" if robust else "FAIL"}')
 
     # Save null distribution
     np.save(os.path.join(RESULTS_DIR, 'mvp0_perm_null.npy'), null_dist)
     np.save(os.path.join(RESULTS_DIR, 'mvp0_gaps.npy'), gaps)
 
-    # ── Final pass/fail report ─────────────────────────────────────────────────
+    # - Final pass/fail report -
     cond1 = n_exc < len(SUBJECTS) * 0.50
     cond2 = gaps.mean() > 0 and n_pos > n * 0.5 and ordinal_ok
     cond3 = rt_guard_ok
     cond4 = perm_ok
     cond5 = motor_null_ok
 
-    def chk(c): return '✓ PASS' if c else '✗ FAIL'
+    def chk(c): return 'PASS PASS' if c else 'FAIL FAIL'
 
     print('\n' + '=' * 68)
-    print('MVP-0 PASS CONDITIONS  (pre-declared, §8 of 02_PIPELINE_LOGIC.md)')
+    print('MVP-0 PASS CONDITIONS  (pre-declared, section8 of 02_PIPELINE_LOGIC.md)')
     print('=' * 68)
     print(f'  1. Reference stable (< 50% excluded) : {chk(cond1)}')
     print(f'     ({n_exc} excluded, {n} stable of {len(results)} total)')
-    print(f'  2. Ordinal Lure > NT ≈ Target        : {chk(cond2)}')
+    print(f'  2. Ordinal Lure > NT approx Target        : {chk(cond2)}')
     print(f'     (T={mean_T:.4f} NT={mean_NT:.4f} L={mean_L:.4f}, {n_pos}/{n} positive)')
     print(f'  3. Gap survives RT regression        : {chk(cond3)}')
     print(f'     (RT-resid d={gaps_rt.mean():+.4f}, {n_pos_rt}/{n} positive)')
@@ -423,10 +423,10 @@ def main():
     print(f'  5. Motor-ROI negative control null   : {chk(cond5)}')
     print()
     all_pass = all([cond1, cond2, cond3, cond4, cond5])
-    verdict  = '✓  MVP-0 EXISTENCE PROOF STANDS' if all_pass else '✗  NOT ALL CONDITIONS MET'
+    verdict  = 'PASS  MVP-0 EXISTENCE PROOF STANDS' if all_pass else 'FAIL  NOT ALL CONDITIONS MET'
     print(f'  RESULT: {verdict}')
     print('=' * 68)
-    print(f'\nResults saved → {RESULTS_DIR}/')
+    print(f'\nResults saved -> {RESULTS_DIR}/')
 
 
 if __name__ == '__main__':

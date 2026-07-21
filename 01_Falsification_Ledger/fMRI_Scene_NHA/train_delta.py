@@ -168,7 +168,7 @@ def train_delta(
         valid_val_list.append(valid_val)
 
     if not latents_train_list:
-        assess FileNotFoundError(f"Real data not found at {data_dir}. Halting execution.")
+        raise FileNotFoundError(f"Real data not found at {data_dir}. Halting execution.")
         
     max_N = max(l.shape[1] for l in latents_train_list + latents_val_list)
     

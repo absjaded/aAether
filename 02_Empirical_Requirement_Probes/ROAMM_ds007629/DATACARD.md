@@ -147,13 +147,24 @@ Finding: the reference weakens across runs but remains above chance. The no-run/
 
 ## Local 10s EEG Riemannian Reference Tests
 
-These tests used a local 10s EEG tensor built from ROAMM synced derivatives. The tensor is not redistributed. They do not use REVE and do not require a GPU.
+These tests use the local 10s EEG tensor pulled from the preserved volume. They do not use REVE and do not require a GPU.
 
 Pipeline: covariance -> SPD conditioning -> Euclidean Alignment -> subject-balanced Riemannian class references -> affine-invariant geodesic score.
 
-Input files used locally: non-redistributed EEG tensor, epoch index, and metadata artifacts derived from the ROAMM synced derivatives.
+Input files used locally:
 
-Cached local intermediates: non-redistributed covariance and alignment arrays.
+```text
+files/roamm_eeg10s/roamm_balanced_eeg10s_uV_200hz.dat
+files/roamm_eeg10s/balanced_epoch_index_10s.csv
+files/roamm_eeg10s/roamm_balanced_eeg10s_uV_200hz_meta.json
+```
+
+Cached local intermediates, not included in the packaged dataset folder:
+
+```text
+files/roamm_eeg10s/roamm_eeg10s_cov_ridge1e-3_f32.dat
+files/roamm_eeg10s/roamm_eeg10s_cov_ea_all_f32.dat
+```
 
 ### Shared 39-to-1 EEG Reference
 
@@ -205,7 +216,16 @@ Finding: broadband covariance is weak even within subject. The failed 39-to-1 re
 
 These tests use theta `4-8 Hz`, alpha `8-13 Hz`, and beta `13-30 Hz` bandpass covariances. Each band uses covariance -> SPD conditioning -> Euclidean Alignment -> Riemannian class references -> geodesic score. A logistic combiner is fit over the three band scores.
 
-Cached local intermediates: non-redistributed covariance and alignment arrays.
+Cached local intermediates, not included in the packaged dataset folder:
+
+```text
+files/roamm_eeg10s/roamm_eeg10s_cov_theta4_8_butter4_ridge1e-3_f32.dat
+files/roamm_eeg10s/roamm_eeg10s_cov_alpha8_13_butter4_ridge1e-3_f32.dat
+files/roamm_eeg10s/roamm_eeg10s_cov_beta13_30_butter4_ridge1e-3_f32.dat
+files/roamm_eeg10s/roamm_eeg10s_cov_theta4_8_butter4_ea_all_f32.dat
+files/roamm_eeg10s/roamm_eeg10s_cov_alpha8_13_butter4_ea_all_f32.dat
+files/roamm_eeg10s/roamm_eeg10s_cov_beta13_30_butter4_ea_all_f32.dat
+```
 
 ### Filter-Bank 39-to-1 EEG Reference
 
@@ -360,7 +380,7 @@ For EEG Riemannian scripts, set `--root` to a directory containing:
 
 ```text
 balanced_epoch_index_10s.csv
-non-redistributed balanced 10s EEG tensor
+roamm_balanced_eeg10s_uV_200hz.dat
 roamm_balanced_eeg10s_uV_200hz_meta.json
 ```
 For REVE probe scripts, set `ROAMM_RESULTS_DIR` to a directory containing:
@@ -368,7 +388,7 @@ For REVE probe scripts, set `ROAMM_RESULTS_DIR` to a directory containing:
 ```text
 balanced_epoch_index_10s.csv
 p_eye_personal_cal.npy
-non-redistributed 10s REVE feature tensor
+reve_base_features_10s_balanced_f16.dat
 reve_base_features_10s_balanced_f16_meta.json
 ```
 

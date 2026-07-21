@@ -78,7 +78,7 @@ The deliverable is a failure-boundary table, not a best score.
 
 Run location: `04_Alignment_Identifiability/Synthetic_Geometry_Benchmark/outputs/identifiability_full_grid/`.
 
-Configuration: 3 relational regimes x 2 symmetry regimes x 3 distortion levels x 3 noise levels x 8 replicates = 432 replicate cells. Each cell used 100 latent points, 8 observation dimensions, anchors `1,2,4,8,16,32`, and 99 label-permutation nulls.
+Configuration: 3 relational regimes x 2 symmetry regimes x 3 distortion levels x 3 noise levels x 8 replicates = 432 replicate cells. Each cell used 100 latent points, 8 observation dimensions, anchors `1,2,4,8,16,32`, 99 label-permutation nulls, and 8 CPU workers on the pod.
 
 Validity fixes before the full run:
 
@@ -113,6 +113,13 @@ Winning methods: GW won 20 cells, distance-signature matching won 15, signature-
 Interpretation: the architecture problem is not whether a paired map can recover the constructed relation; paired Procrustes and paired ridge passed every cell. The hard boundary is identifiability without anchors. Aether should treat relational richness, symmetry, and anchor cost as required measurements, not as implementation details.
 
 Funding-safe claim from this run: in silico, when two observation spaces share a latent state, the Aether alignment math recovers correspondence-free geometry in rich or asymmetric regimes and quantifies the paired-anchor cost when symmetry blocks free recovery. This does not prove neural-to-model alignment or causal steering.
+
+## Compute Policy
+
+- Local: audits, smoke tests, compact sweeps, and result packaging.
+- CPU pod: 16 vCPU and 32-64 GB RAM, normally 8-12 workers.
+- GPU pod: only for foundation-model feature extraction or substantial LLM activation work.
+- Durable artifacts go on the attached volume; logs, caches, and temporary arrays do not.
 
 ## Claim Discipline
 

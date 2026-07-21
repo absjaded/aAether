@@ -10,15 +10,15 @@ THE PROBLEM IT FIXES
   CONFOUNDED with dimensionality. "Motor is null" might just mean "6 ROIs
   can't support the geometry," which proves nothing about spatial specificity.
 
-THE FIX — match dimensionality, two complementary ways:
+THE FIX - match dimensionality, two complementary ways:
 
-  ARM 1 (core) — DOWNWARD MATCH.
+  ARM 1 (core) - DOWNWARD MATCH.
     Subsample Tier-1+2 down to the motor ROI count and compare WM-at-k vs
     motor-at-k at the SAME matrix size. If WM-k stays positive while motor-k
     sits at ~0, the motor null is BIOLOGICAL, not a dimensionality artifact.
     This is the direct refutation of the confound.
 
-  ARM 2 (bonus) — SPATIAL-SPECIFICITY NULL.
+  ARM 2 (bonus) - SPATIAL-SPECIFICITY NULL.
     Draw random 22-ROI sets from non-WM/non-conflict cortex, build a null
     distribution of cohort d at FULL matched dimensionality, and locate the
     real Tier-1+2 d within it. Shows Tier-1+2 is specifically elevated, not
@@ -39,10 +39,10 @@ from pyriemann.estimation import ERPCovariances
 from pyriemann.utils.mean import mean_riemann
 from pyriemann.utils.distance import distance_riemann
 
-# ── Frozen config (identical to the closeout harness) ─────────────────────────
-# Kaggle paths — dataset must be uploaded as 'nsvd-fusion'
-DATA_DIR     = '/kaggle/input/nsvd-fusion'
-RESULTS_DIR  = '/kaggle/working'
+# - Frozen config (identical to the closeout harness) -
+# Environment-neutral defaults. Override with HCP_NBACK_DATA_DIR and HCP_NBACK_RESULTS_DIR.
+DATA_DIR = os.getenv('HCP_NBACK_DATA_DIR', os.path.join(os.path.dirname(__file__), '..', '.data', 'hcp_nback_meg'))
+RESULTS_DIR = os.getenv('HCP_NBACK_RESULTS_DIR', os.path.join(os.path.dirname(__file__), '..', '.artifacts', 'hcp_nback_meg'))
 FS           = 250
 ONSET_SAMPLE = 127
 MISMATCH_WIN = (0.25, 0.50)
@@ -72,7 +72,7 @@ SUBJECTS = [
     '715950','725751','735148','783462','814649',
 ]
 
-# ── Gap math — identical to the harness (so numbers are comparable) ───────────
+# - Gap math - identical to the harness (so numbers are comparable) -
 
 def time_axis(n): return (np.arange(n) - ONSET_SAMPLE) / FS
 def win_mask(t, w): return (t >= w[0]) & (t < w[1])
@@ -115,11 +115,11 @@ def cohort_d(gaps):
     return g.mean(), int((g > 0).sum()), len(g)
 
 
-# ── Top-tier worker (must be module-tier for ProcessPoolExecutor pickling) ──
+# - Top-tier worker (must be module-tier for ProcessPoolExecutor pickling) -
 
 def _process_subject(args):
     """One subject: computes all gaps (tier12, motor, all wm_k draws, all null22 draws).
-    Logic is identical to the inline loop — just lifted out for parallelism."""
+    Logic is identical to the inline loop - just lifted out for parallelism."""
     subj, tier12_idx, motor_idx, wm_k_sets, null22_sets, data_dir = args
     try:
         X = np.load(os.path.join(data_dir, f'{subj}_Xsrc.npy'))
@@ -134,7 +134,7 @@ def _process_subject(args):
     }
     return result
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# - Main -
 
 def main():
     from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -153,7 +153,7 @@ def main():
     print(f'Tier-1+2: {len(tier12_idx)} ROIs | Motor: {k} ROIs | non-WM pool: {len(nonwm_idx)}')
     print(f'Parallelism: max_workers={MAX_WORKERS}')
 
-    # Pre-draw ROI sets ONCE — same draws applied to all subject (oracle design)
+    # Pre-draw ROI sets ONCE - same draws applied to all subject (oracle design)
     wm_k_sets   = [list(rng.choice(tier12_idx, size=k, replace=False)) for _ in range(K_SUBSETS)]
     null22_sets = [list(rng.choice(nonwm_idx, size=len(tier12_idx), replace=False))
                    for _ in range(N_NULL22)]
@@ -187,19 +187,19 @@ def main():
                 print(f'  {completed}/{len(SUBJECTS)} subjects done', end='\r')
     print(f'  {completed}/{len(SUBJECTS)} subjects done')
 
-    # Aggregate ────────────────────────────────────────────────────────────────
+    # Aggregate -
     d_tier12, pos_t, n_t = cohort_d(acc['tier12'])
     d_motor,  pos_m, n_m = cohort_d(acc['motor'])
     wm_k_ds  = np.array([cohort_d(acc[f'wm{k}_{j}'])[0] for j in range(K_SUBSETS)])
     null_ds  = np.array([cohort_d(acc[f'null22_{j}'])[0] for j in range(N_NULL22)])
 
     print('\n' + '=' * 66)
-    print('ARM 1 — DOWNWARD MATCH  (the direct fix)')
+    print('ARM 1 - DOWNWARD MATCH  (the direct fix)')
     print('=' * 66)
     print(f'  Tier-1+2 (full, {len(tier12_idx)} ROIs)   d = {d_tier12:+.4f}   '
           f'({pos_t}/{n_t} positive)   [context]')
     print(f'  WM subsampled to {k} ROIs        d = {wm_k_ds.mean():+.4f} '
-          f'± {wm_k_ds.std():.4f}  (mean over {K_SUBSETS} draws)')
+          f'+/- {wm_k_ds.std():.4f}  (mean over {K_SUBSETS} draws)')
     print(f'  Motor ({k} ROIs)                 d = {d_motor:+.4f}   '
           f'({pos_m}/{n_m} positive)')
     wm_k_positive = wm_k_ds.mean() > 0.10
@@ -208,7 +208,7 @@ def main():
     print(f'\n  WM retains signal at {k} ROIs : {"YES" if wm_k_positive else "NO"}')
     print(f'  Motor null at {k} ROIs        : {"YES" if motor_null else "NO"}')
     if matched_ok:
-        print('  VERDICT: motor null is BIOLOGICAL, not a dimensionality artifact. ✓')
+        print('  VERDICT: motor null is BIOLOGICAL, not a dimensionality artifact. PASS')
     elif not wm_k_positive:
         print('  VERDICT: WM also collapses at low ROI count => the downward match is')
         print('           UNINFORMATIVE (6 ROIs too few). Rely on Arm 2 for specificity.')
@@ -217,21 +217,21 @@ def main():
         print('           effect may carry a motor/response component. INVESTIGATE.')
 
     print('\n' + '=' * 66)
-    print('ARM 2 — SPATIAL-SPECIFICITY NULL  (random 22-ROI non-WM sets)')
+    print('ARM 2 - SPATIAL-SPECIFICITY NULL  (random 22-ROI non-WM sets)')
     print('=' * 66)
     emp_p = float(np.mean(np.abs(null_ds) >= abs(d_tier12)))
     print(f'  Real Tier-1+2 d              : {d_tier12:+.4f}')
-    print(f'  Non-WM null d (mean ± SD)    : {null_ds.mean():+.4f} ± {null_ds.std():.4f}')
+    print(f'  Non-WM null d (mean +/- SD)    : {null_ds.mean():+.4f} +/- {null_ds.std():.4f}')
     print(f'  Null range                   : [{null_ds.min():+.4f}, {null_ds.max():+.4f}]')
-    print(f'  Empirical p (|null| ≥ |real|): {emp_p:.4f}  over {N_NULL22} sets')
+    print(f'  Empirical p (|null| >= |real|): {emp_p:.4f}  over {N_NULL22} sets')
     spatial_ok = emp_p < 0.05
-    print(f'  Tier-1+2 specifically elevated: {"YES ✓" if spatial_ok else "NO"}')
+    print(f'  Tier-1+2 specifically elevated: {"YES PASS" if spatial_ok else "NO"}')
 
     print('\n' + '=' * 66)
     print('CONTROL SUMMARY')
     print('=' * 66)
-    print(f'  Dimensionality-matched motor null : {"PASS ✓" if matched_ok else "CHECK"}')
-    print(f'  Spatial specificity               : {"PASS ✓" if spatial_ok else "CHECK"}')
+    print(f'  Dimensionality-matched motor null : {"PASS PASS" if matched_ok else "CHECK"}')
+    print(f'  Spatial specificity               : {"PASS PASS" if spatial_ok else "CHECK"}')
     print('  A negative control now controls for ROI count, not just region.')
 
     # Save key arrays for offline inspection

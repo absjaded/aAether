@@ -1,42 +1,37 @@
-# Dataset Card: OpenNeuro ds004602 — EEG Flanker Task (ERN Proxy)
+# OpenNeuro ds004602 Flanker EEG Datacard
 
-## Identity
-- **OpenNeuro Accession:** `ds004602`
-- **Full Name:** "A large electroencephalography dataset for cognitive flexibility and error monitoring"
-- **Task:** Eriksen Flanker Task — congruent/incongruent arrow trials capturing Error-Related Negativity (ERN) at ~150ms post-response
-- **Acquisition:** 128-channel EGI HydroCel GSN EEG, 500 Hz, N=20 subjects
-- **Distribution:** OpenNeuro CC0 License — freely redistributable, but raw EEG `.npy` files are gitignored due to file size
+## Dataset
 
-## What Was Attempted
-1. **LaBraM feature extraction:** Frozen Large Brain Model (LaBraM, 768-dim) applied to bandpass-filtered, epoch-sliced EEG windows (−400ms to +600ms around stimulus)
-2. **Sparse Autoencoder (SAE):** Dictionary learning (768→4096) to extract monosemantic features; fixed `DECEPTION_FEATURE_IDX = 42` as a stand-in for the ERN signal
-3. **Spiking Neural Network (SNN):** snnTorch Leaky Integrate-and-Fire network to convert SAE feature activations into spike trains, then RL penalties
-4. **Global centroid classification:** Cosine similarity between trial embeddings and a population-average centroid to classify deceptive vs. honest cognitive states
-5. **Contrastive k-NN geometry:** k-nearest neighbors on the LaBraM embedding space
+Name: OpenNeuro ds004602, EEG Flanker / error-monitoring task.
 
-## Why It Failed for Pre-Verbal Intent Capture
+Primary data link: https://openneuro.org/datasets/ds004602
 
-### Failure 1: Cross-Subject Skull Geometry Warping
-EEG signals are volume-conducted through skull, scalp, and cerebrospinal fluid before reaching the electrodes. Physical skull geometry, scalp impedance, and cortical folding patterns are unique to each individual. This means a spatial centroid learned from one subject is geometrically meaningless for another. Zero-shot cross-subject generalization was impossible.
+Data terms: OpenNeuro public dataset. This folder does not redistribute raw EEG, preprocessed arrays, model features, or local outputs.
 
-### Failure 2: SAE Temporal Window Superposition Paradox
-The ERN signal is a 50–100ms transient occurrence within a 1000ms epoch. Averaging LaBraM hidden states across the full temporal window (`[90:130]ms` slice, then mean-pooled) collapsed the continuous neural dynamics into a single vector. Distinct cognitive states at different timepoints superimposed and cancelled, collapsing True Positive Rate to ~1.6%.
+## Question
 
-### Failure 3: The ERN Is Post-Articulatory
-Even if the EEG signal could be recovered, the ERN fires ~50–100ms *after* response execution. This is definitionally post-verbal — the error has already been committed and registered. There is no pre-verbal intent signal in this occurrence-related potential.
+Can an error-monitoring EEG task provide a pre-verbal intent signal, or is it post-response error processing?
 
-## Distribution Restrictions
-- Raw `.set`, `.fdt`, `.npy` preprocessed files: **DO NOT COMMIT** (gitignored)
-- Code and datacard: freely committable
+## Analysis Summary
 
-## Key Files in This Directory
-| File | Description |
+The attempted path used EEG preprocessing, frozen brain-model style embeddings, sparse autoencoding, and a spiking readout on Flanker/error-related activity.
+
+## Result
+
+The task was excluded as a pre-verbal intent substrate. Error-related negativity is locked to response/error processing, not to a private pre-response state. Temporal pooling over long epochs also collapsed short transient structure and made the representation unsuitable for the intended claim.
+
+## Verdict
+
+Structurally excluded. This dataset is useful as an error-monitoring/response-control reference, but not as evidence for pre-verbal intent measurement.
+
+## Kept Scripts
+
+| File | Purpose |
 |---|---|
-| `DATACARD.md` | This file |
-| `kaggle_labram_ingestion.py` | Pipeline: download ds004602, bandpass, epoch, LaBraM forward pass |
-| `kaggle_temporal_eda.py` | EDA of temporal dynamics in LaBraM embeddings |
-| `d2_sae.py` | Sparse Autoencoder (768→4096 dictionary) |
-| `d3_snn.py` | snnTorch Leaky I&F SNN spike train converter |
-| `d1_mock_generator.py` | MockBrainSignalGenerator (Phase 0.5 synthetic EEG) |
-| `d1_5_nuisance_regressor.py` | Nuisance regressor to suppress artifact coupling |
-| `preprocess.py` | Raw EEG preprocessing (bandpass, epoch, resample) |
+| `preprocess.py` | Local EEG preprocessing scaffold. |
+| `d2_sae.py` | Sparse autoencoder readout prototype. |
+| `d3_snn.py` | Simple spiking-network readout prototype. |
+
+## Excluded From Public Package
+
+Remote notebook ingestion scripts, raw/preprocessed arrays, and older synthetic/nuisance phase helpers were archived outside the commit candidate.

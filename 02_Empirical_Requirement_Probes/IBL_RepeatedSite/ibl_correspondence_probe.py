@@ -1,26 +1,53 @@
 #!/usr/bin/env python3
 """
-IBL cross-session correspondence probe.
+ibl_correspondence_probe.py
+===========================
+THE B PROBE. Replaces the synthetic re-embedding probe with real neural geometry.
 
-Question: can two neural representational spaces with no shared units and no
-paired trials be aligned from relational geometry alone?
+THE QUESTION
+------------
+Can two representational spaces with NO shared substrate and NO paired points be
+aligned from relational geometry alone?
 
-Design:
-- Use IBL RepeatedSite sessions across labs.
-- Build a separate latent space for each session.
-- Fit correspondence-free GW-style alignments without trial labels.
-- Use labels only after alignment for scoring.
-- Report label transfer, anchor sensitivity, and coupling degeneracy.
+If yes  -> a human intent manifold can plausibly be aligned to a model's latent
+           space without paired human/model data. World B. Plug-and-play.
+If only with anchors -> World A. Calibrated instrument. The anchor count IS the
+           per-domain calibration cost, i.e. the unit economics.
+If never -> World C. Correspondence-free alignment does not work on real neural
+           geometry, and the architecture needs rethinking. Learned for free.
 
-Interpretation:
-- Strong correspondence-free recovery would support geometry-only alignment.
-- Recovery only after anchors estimates calibration cost.
-- Null-equivalent recovery means this public neural geometry is not sufficient
-  for the intended alignment claim under the tested settings.
+WHY IBL RepeatedSite
+--------------------
+  * 88 sessions, 87 mice, 12 labs, SAME probe trajectory, SAME task.
+  * Mouse A and mouse B share NO neurons. Different counts. No correspondence.
+  * They DO share task structure -> there is a real latent geometry to recover.
+  * Trial labels (contrast side, choice, block prior) give GROUND TRUTH to
+    validate any recovered coupling against.
+  * Cross-lab is built in: the hardest version of the question.
+  * YOU DID NOT WRITE MOUSE CORTEX. The synthetic probe's fatal weakness was that
+    a generator you author can be shaped, however unconsciously, to flatter the
+    method. This cannot be rigged.
 
-Usage:
+FIREWALL (the same discipline as everywhere else)
+-------------------------------------------------
+  * The alignment method NEVER sees trial labels. Labels are used ONLY to score
+    the recovered coupling AFTER the fact.
+  * Report the degradation curve, not a single number.
+  * Report coupling degeneracy, not just accuracy. A GW coupling that collapses
+    to a near-uniform plan can still score above chance by luck.
+  * A null: align mouse A to a TRIAL-SHUFFLED mouse B. If that scores as well,
+    the method is reading nothing.
+
+STOPPING RULE
+-------------
+ONE build. Returns an A/B/C verdict. Do not iterate parameters into theory-hell.
+Necessary, not sufficient: this says the alignment is geometrically plausible on
+real neural data. It does NOT prove a brain aligns to a transformer.
+
+USAGE
+-----
     pip install ONE-api POT scikit-learn numpy
-    python ibl_correspondence_probe.py --n-mice 6 --label side --t-post 0.1 --workers 8 --out artifacts/ibl_tpost100_min300/
+    python ibl_correspondence_probe.py --n-mice 6 --label side --t-post 0.1 --workers 8 --out results_tpost100_min300/
 """
 import argparse, json, os, sys, warnings
 import numpy as np
@@ -255,7 +282,8 @@ def main():
     os.makedirs(a.out, exist_ok=True)
 
     from one.api import ONE
-    one = ONE(base_url='https://openalyx.internationalbrainlab.org', silent=True)
+    ONE.setup(base_url='https://openalyx.internationalbrainlab.org', silent=True)
+    one = ONE(password='international', silent=True)
 
     eids = one.search(datasets=['spikes.times.npy'], tag='2024_Q2_IBL_et_al_RepeatedSite')
     print(f"pre-movement window: [stimOn, stimOn + {a.t_post:.3f}s]")

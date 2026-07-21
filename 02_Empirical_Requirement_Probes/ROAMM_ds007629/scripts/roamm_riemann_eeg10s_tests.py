@@ -351,8 +351,8 @@ def run_stability(idx: pd.DataFrame, cov: np.memmap, batch: int, out_dir: Path) 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="ROAMM 10s EEG Riemannian shared-reference tests")
-    ap.add_argument("--root", default="artifacts/roamm_eeg10s")
-    ap.add_argument("--out", default="artifacts/roamm_riemann_eeg10s")
+    ap.add_argument("--root", default="files/roamm_eeg10s")
+    ap.add_argument("--out", default="files/roamm_riemann_eeg10s")
     ap.add_argument("--batch", type=int, default=32)
     ap.add_argument("--calibration-repeats", type=int, default=200)
     args = ap.parse_args()

@@ -1,5 +1,5 @@
 """
-c2_power_analysis.py — Statistical power of the C2 friction Gate 2
+c2_power_analysis.py - Statistical power of the C2 friction Gate 2
 ==================================================================
 Pure simulation. No neural data. Answers:
 

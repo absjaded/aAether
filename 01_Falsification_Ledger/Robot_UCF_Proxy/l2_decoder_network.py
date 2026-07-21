@@ -1,8 +1,8 @@
 """
-LiveL2Decoder — Aether-β v2.0 (FSQ + Slot Attention + Grounded-Symbolic).
+LiveL2Decoder - Aether-beta v2.0 (FSQ + Slot Attention + Grounded-Symbolic).
 
 Architecture (v2.0 spec, NISP_v2_Delta_Report.md):
-    Input:  CognitiveLatent.data of shape (17, 16) — Yeo-17 networks × 16-frame window
+    Input:  CognitiveLatent.data of shape (17, 16) - Yeo-17 networks x 16-frame window
     Block 0: Slot Attention (K=17) binds Yeo networks to distinct latent slots.
     Block 1: Finite Scalar Quantization (FSQ) eliminates codebook collapse.
     Block 2: Unified Causal Transformer over [Domain Tag] + [17 Neural Slots] + [Units].
@@ -144,7 +144,7 @@ class FiniteScalarQuantization(nn.Module):
 
 class Aether(nn.Module):
     """
-    Aether-β (v2.0): Slot Attention → FSQ → Causal Transformer.
+    Aether-beta (v2.0): Slot Attention -> FSQ -> Causal Transformer.
     Unified Sequence: [Domain Tag] + [17 Grounded Slots] + [eDSL Units]
     """
     def __init__(
@@ -246,7 +246,7 @@ class Aether(nn.Module):
 
 
 class LiveL2Decoder:
-    """Trained constrained-generation decoder. Loads Aether-β v2.0 checkpoint."""
+    """Trained constrained-generation decoder. Loads Aether-beta v2.0 checkpoint."""
 
     def __init__(self, checkpoint_path: str | Path | None = None) -> None:
         self._checkpoint_path = Path(checkpoint_path) if checkpoint_path else None
@@ -257,7 +257,7 @@ class LiveL2Decoder:
         if self._model is not None:
             return
         if self._checkpoint_path is None or not self._checkpoint_path.exists():
-            assess NotImplementedError(f"Aether-β v2.0 checkpoint missing at {self._checkpoint_path}")
+            raise NotImplementedError(f"Aether-beta v2.0 checkpoint missing at {self._checkpoint_path}")
 
         self._model = Aether(vocab_size=len(VOCAB))
         state = torch.load(self._checkpoint_path, map_location="cpu", weights_only=True)

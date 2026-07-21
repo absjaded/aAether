@@ -1,7 +1,7 @@
 """
 Aether causal transformer for aether_lab.
 
-Input:  raw torch.Tensor shape (batch, 17, 16) — Yeo-17 × 16-frame window
+Input:  raw torch.Tensor shape (batch, 17, 16) - Yeo-17 x 16-frame window
 Output: dict(surface=str, confidence=float)
 
 Zero imports from nisp/. Uses Grammar v1 vocabulary from grammar.py.
@@ -18,7 +18,7 @@ import torch.nn.functional as F
 class ResidualIsolation(nn.Module):
     """
     Simpler alternative: projects out only low-tier audio-visual sensory variance using TRIBE features.
-    Does NOT include physiological regressors — use as PoC fallback only.
+    Does NOT include physiological regressors - use as PoC fallback only.
     """
     def __init__(self, sensory_dim: int, num_parcels: int, n_parcels_early: int = 256):
         super().__init__()
@@ -163,7 +163,7 @@ class SpatiallyMaskedCrossAttention(nn.Module):
         super().__init__()
         self.attn = nn.MultiheadAttention(d_concept, n_heads, batch_first=True)
         self.kv_proj = nn.Linear(d_parcel, d_concept)
-        # Learnable soft spatial mask — initialized from atlas priors
+        # Learnable soft spatial mask - initialized from atlas priors
         mask_init = prior_mask if prior_mask is not None else torch.zeros(n_parcels)
         self.spatial_log_mask = nn.Parameter(mask_init)  # log-space for stability
 
@@ -213,7 +213,7 @@ class NeuRONAExecutor(nn.Module):
     Implements:
       - Spatially masked cross-attention (Q=eDSL, K=V=brain parcels)
       - H5 full argument-guided relational grounding for predicates
-      - Gumbel-Softmax → discrete Boolean → Lean 4 terminal reward
+      - Gumbel-Softmax -> discrete Boolean -> Lean 4 terminal reward
     """
     def __init__(self, d_parcel: int, d_concept: int, n_parcels: int,
                  predicate_prior: torch.Tensor = None,
@@ -270,7 +270,7 @@ class NeuRONAExecutor(nn.Module):
 D_LATENT = 1664
 
 class NeuroVAE(nn.Module):
-    """Variational backbone: fMRI residual → compact CLIP-aligned latent z_c."""
+    """Variational backbone: fMRI residual -> compact CLIP-aligned latent z_c."""
     def __init__(self, d_fmri: int, d_latent: int = D_LATENT):
         super().__init__()
         self.encoder = nn.Sequential(
@@ -298,7 +298,7 @@ class NeuroVAE(nn.Module):
         return z, self.decoder(z), kl
 
 class SiTVelocityNet(nn.Module):
-    """Scalable Interpolation Transformer velocity network v_θ(z_t, t)."""
+    """Scalable Interpolation Transformer velocity network v_theta(z_t, t)."""
     def __init__(self, d_latent: int = D_LATENT, n_heads: int = 8,
                  n_layers: int = 4, d_hidden: int = 1024):
         super().__init__()

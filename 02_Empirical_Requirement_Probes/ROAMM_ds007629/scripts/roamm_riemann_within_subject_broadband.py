@@ -84,7 +84,7 @@ def run_within_subject(root: Path, out_dir: Path, batch: int) -> tuple[pd.DataFr
 def main() -> None:
     ap = argparse.ArgumentParser(description="Within-subject broadband Riemannian control for ROAMM 10s EEG")
     ap.add_argument("--root", default="data/roamm_eeg10s")
-    ap.add_argument("--out", default="artifacts/roamm_riemann_eeg10s")
+    ap.add_argument("--out", default="work/roamm_riemann_eeg10s")
     ap.add_argument("--batch", type=int, default=32)
     args = ap.parse_args()
     root = Path(args.root)

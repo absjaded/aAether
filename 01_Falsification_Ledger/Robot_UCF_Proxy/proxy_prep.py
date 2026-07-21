@@ -1,5 +1,5 @@
 """
-research/aether_lab/data/proxy_prep.py — Bridge v0.2 latents to Aether Lab.
+research/aether_lab/data/proxy_prep.py - Bridge v0.2 latents to Aether Lab.
 
 This script:
 1. Loads real TRIBE v2 latents (1024,) from nisp-v0.2.

@@ -7,7 +7,7 @@ import enum
 from typing import Final
 
 
-# ─── Enums ────────────────────────────────────────────────────────────────────
+# - Enums -
 
 class Valence(enum.Enum):
     DETECT = "detect"         # Scene understanding (e.g., UCF)
@@ -32,7 +32,7 @@ ESCALATION_VALENCES: Final[frozenset[Valence]] = frozenset({
     Valence.COMMAND,
 })
 
-# ─── Unit Vocabulary ─────────────────────────────────────────────────────────
+# - Unit Vocabulary -
 
 UNIT_OPEN: Final[str] = "("
 TOK_CLOSE: Final[str] = ")"
@@ -45,7 +45,7 @@ TOK_VALENCE: Final[frozenset[str]] = frozenset(v.value for v in Valence)
 TOK_MODALITY: Final[frozenset[str]] = frozenset(m.value for m in Modality)
 TOK_FACTS: Final[frozenset[str]] = frozenset(_SCENE_FACTS)
 
-# Total ordered vocabulary (order is stable — at no point reorder after training)
+# Total ordered vocabulary (order is stable - at no point reorder after training)
 VOCAB: Final[tuple[str, ...]] = (
     UNIT_OPEN,
     TOK_CLOSE,

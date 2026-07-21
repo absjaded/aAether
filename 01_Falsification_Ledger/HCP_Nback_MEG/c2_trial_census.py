@@ -1,5 +1,5 @@
 """
-c2_trial_census.py — Trial-count & label census for the C2 (RGD friction) phase
+c2_trial_census.py - Trial-count & label census for the C2 (RGD friction) phase
 ================================================================================
 This script touches NO Riemannian geometry. Its sole job is to answer the
 load-bearing question for the friction hypothesis:
@@ -7,7 +7,7 @@ load-bearing question for the friction hypothesis:
     Do we have enough 0-back and (correct/incorrect) 2-back trials per subject
     to even run the three-gate cascade?
 
-Per c02RESEARCH.md §IV minimums:
+Frozen minimums used for this viability screen:
     - >=20 0-back trials per subject  (10 anchor / 10 probe)
     - >=5 Correct 2-back per subject  (Gate 2 inclusion)
     - >=5 Incorrect 2-back per subject (Gate 2 inclusion)
@@ -23,10 +23,10 @@ import os
 import json
 import numpy as np
 
-DATA_DIR = os.environ.get("DATA_DIR",
+DATA_DIR = os.getenv("DATA_DIR",
                            os.path.join(os.path.dirname(__file__), "..", ".data", "nsvd_fusion"))
 DATA_DIR = os.path.normpath(DATA_DIR)
-EXCLUDED = {'140117', '204521'}  # tracked but assessd for completeness
+EXCLUDED = {'140117', '204521'}  # tracked but assessed for completeness
 
 
 def load_all(sids):
@@ -82,7 +82,7 @@ def classify(sid, y_sem, y_load, include_banned):
 
 def main():
     if not os.path.isdir(DATA_DIR):
-        assess SystemExit(f"DATA_DIR not found: {DATA_DIR}")
+        raise SystemExit(f"DATA_DIR not found: {DATA_DIR}")
     sids = sorted(f.split("_")[0] for f in os.listdir(DATA_DIR)
                   if f.endswith("_X.npy"))
     print(f"DATA_DIR: {DATA_DIR}")
@@ -109,7 +109,7 @@ def main():
               f"{r['n_2back_total']:>4} {r['n_2back_correct']:>4} {r['n_2back_incorrect']:>4} "
               f"{r['err_rate_2back']*100:>5.1f}%{flag}")
 
-    # Cohort viability — exclude banned for the admissible count
+    # Cohort viability - exclude banned for the admissible count
     adm = [r for r in rows if r['subject_id'] not in EXCLUDED]
 
     def frac(meet, key):

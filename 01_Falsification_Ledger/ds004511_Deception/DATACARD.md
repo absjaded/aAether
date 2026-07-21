@@ -1,36 +1,23 @@
-# Dataset Card: OpenNeuro ds004511 — Deception and Cognitive Control EEG
+# OpenNeuro ds004511 Deception EEG Datacard
 
-## Identity
-- **OpenNeuro Accession:** `ds004511`
-- **Full Name:** "A Multimodal Dataset for Deception and Cognitive Control"
-- **DOI:** `doi:10.18112/openneuro.ds004511.v1.0.2`
-- **Task:** Deception paradigm — subjects lie or tell the truth in response to biographical questions while EEG is recorded
-- **Acquisition:** Standard 64-channel EEG setup, ~500 Hz
-- **Distribution:** OpenNeuro (see DOI). Raw `.npy` files gitignored due to size.
+## Dataset
+- Source: OpenNeuro ds004511, "A multimodal dataset for deception and cognitive control"
+- Data link: https://openneuro.org/datasets/ds004511
+- DOI: 10.18112/openneuro.ds004511.v1.0.2
+- Modality: 64-channel EEG during truth/deception responses
+- Repository policy: no raw EEG arrays, subject files, or downloaded data are redistributed here
 
-## What Was Attempted
-After abandoning the MATLAB-corrupted Chen 2024 dataset (chat 13), this dataset was selected as a clean replacement specifically because it targets deception — a cognitive state that is closer to intent violation than the Flanker task. The pipeline attempted:
-1. **Data ingestion and formatting:** `kaggle_ds004511_ingestion.py` — downloaded raw data on Kaggle, standardized format
-2. **Classifier oracle test:** Verified whether any signal existed at all via a simple logistic classifier
-3. **snnTorch training loop:** Leaky Integrate-and-Fire SNN with continuous membrane potential integration across EEG timeseries
-4. **Hyperparameter sweep:** `sweep_phase05.py` — swept lambda (L1 sparsity), spike thresholds, and LIF beta parameters
+## Question Tested
+Could a public deception EEG task act as a proxy for pre-verbal intent violation?
 
-## Why It Failed for Pre-Verbal Intent Capture
+## Work Performed
+The earlier run tested whether deception labels could produce a stable neural representation using standard EEG windows, simple classifier probes, and recurrent/SNN-style modeling. The goal was not just classification. The relevant test was whether a representation survived across subjects without collapsing into subject-specific channel geometry or response-locked artifacts.
 
-### Failure 1: Low Spatial Resolution Overfitting
-Standard 64-channel EEG has approximately 3–4 cm spatial resolution at best. Cognitive processes related to deception and intent involve coordinated prefrontal-limbic circuits at millimeter scale. The spatial resolution is fundamentally insufficient to isolate these circuits. Standard CNN models overfit to channel-tier noise patterns that are unique to individual subjects, achieving high training accuracy but near-chance generalization across subjects.
+## Finding
+The dataset was rejected as an intent substrate. Its strongest EEG features are response monitoring and deception-execution signals, not a clean pre-action commitment signal. Standard EEG spatial resolution also made the learned representation vulnerable to subject and channel-placement shortcuts.
 
-### Failure 2: EEG Cannot Distinguish Deception Intent from Execution
-The EEG ERN and frontal negativity signals that activate during deception occur *during or after* the lying response, not before it. The "intent to deceive" — the pre-verbal commitment — precedes any measurable EEG deflection by design. The dataset captures the aftermath of the cognitive act, not the pre-verbal intent.
+## Technical Verdict
+This dataset is useful as a negative example: deception is closer to intent than generic attention tasks, but the recording and task timing still observe consequences of the act. It does not isolate the pre-verbal state Aether needs.
 
-## Distribution Restrictions
-- OpenNeuro CC0 — technically public, but large raw files gitignored
-- Code and datacard: freely committable
-
-## Key Files in This Directory
-| File | Description |
-|---|---|
-| `DATACARD.md` | This file |
-| `kaggle_ds004511_ingestion.py` | Dataset download, formatting, Kaggle ingestion |
-| `sweep_phase05.py` | 35KB hyperparameter sweep script (LIF beta, lambda, thresholds) |
-| `run_mini_sweep_lambda.py` | Minimal lambda sweep launcher |
+## Files Kept
+No executable scripts are kept in this public candidate folder. Older ingestion and sweep scripts were archived because they were runtime-specific and not needed to document the result.

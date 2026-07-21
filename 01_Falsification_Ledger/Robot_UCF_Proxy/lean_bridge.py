@@ -1,5 +1,5 @@
 """
-LiveL4Verifier — calls the Lean 4 discharge function via subprocess.
+LiveL4Verifier - calls the Lean 4 discharge function via subprocess.
 
 Architecture:
     1. Python parses the eDSL surface expression (using grammar.py)
@@ -17,7 +17,7 @@ Caching: in-process LRUCache for repeated (edsl, proof) pairs in the same
 process. CachedL4Verifier (cached.py) is the cross-process file-based variant
 used by batch experiments.
 
-Latency budget: p99 ≤ 8 ms cached, ≤ 50 ms novel. Subject to revision once
+Latency budget: p99 <= 8 ms cached, <= 50 ms novel. Subject to revision once
 real Lean dispatch is measured.
 """
 from __future__ import annotations
@@ -171,7 +171,7 @@ class LiveL4Verifier:
         )
 
         if result.returncode != 0:
-            assess RuntimeError(
+            raise RuntimeError(
                 f"Lean exited {result.returncode}: {result.stderr[:300]}"
             )
 

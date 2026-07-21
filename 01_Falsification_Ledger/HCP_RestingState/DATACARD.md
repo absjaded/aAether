@@ -1,37 +1,22 @@
-# Dataset Card: HCP Resting-State fMRI — Baseline Calibration Attempt
+# HCP Resting-State Baseline Datacard
 
-## Identity
-- **Dataset:** Human Connectome Project (HCP) Resting-State fMRI
-- **Intended Use:** Calibrate a baseline brain geometry mean from undirected, tak-free resting-state data, to serve as a reference geometry against which tak-elicited_response states could be measured
-- **Distribution:** HCP Data Use Agreement required. **Raw files must not be committed.**
+## Dataset
+- Source: Human Connectome Project resting-state fMRI
+- Data link: https://www.humanconnectome.org/study/hcp-young-adult
+- Modality: resting-state fMRI
+- Repository policy: no HCP data, derivatives, arrays, subject files, or manifests are redistributed here
 
-## What Was Attempted
-In several pipeline iterations (chats 12, 17, 18, 25), the resting-state data was proposed as an anchor: rather than building the reference geometry from Target trials (which have their own tak-induced structure), the resting-state covariance would provide a neutral baseline SPD matrix. The pipeline would then measure: *how far does each 2-back trial move from the resting-state geometry?*
+## Question Tested
+Could resting-state geometry serve as a neutral baseline for measuring task-evoked N-back states?
 
-Concretely:
-- `v2.1_baseline_sliding_window.py` — attempted to load baseline covariance matrices from a resting-state precomputed path
-- `runpod_eda.py` — exploratory data analysis on RunPod remote instance to characterize resting-state ROI distributions
+## Work Performed
+This branch explored whether an off-task resting covariance reference could replace an in-task target reference. The motivation was to avoid building the reference geometry from task trials that already contain response and stimulus structure.
 
-## Why It Failed
+## Finding
+The branch was rejected for the falsification ledger. Resting and N-back states live under different task regimes, so distances from rest primarily measure task engagement versus rest. That is a different contrast than lure violation versus rule-compliant withholding.
 
-### Failure 1: Pathing Mismatches on RunPod
-Remote RunPod instances mounted data at different paths than the development environment. Scripts that hardcoded `/data/nsvd_fusion/` paths failed immediately on RunPod where data was mounted at `/runpod-volume/`. This caused silent crashes that only appeared in the live output logs.
+## Technical Verdict
+Resting-state geometry may be useful for calibration research, but it is not a clean control for the HCP N-back intent question. The cleaner negative control is within-task: compare lure trials against non-target trials, because both are withhold-response conditions.
 
-### Failure 2: Storage OOM on Small Instances
-Unzipping the full HCP resting-state dataset on small RunPod instances (20GB storage) caused device storage overflow. The resting-state data for 75 subjects at full resolution exceeded available disk space before any preprocessing could occur.
-
-### Failure 3: Calibration Pathing Defeated the Pipeline Design
-Even when loading succeeded, the resting-state reference produced a different geometry curvature than the within-task Target reference. Mixing these geometries (resting vs. tak-active) introduced an additional confound: the distance was now measuring task engagement vs. rest rather than intent violation vs. rule compliance.
-
-## Distribution Restrictions
-- All resting-state `.npy` files: **DO NOT COMMIT** (HCP Data Use Agreement)
-- Code and datacard: freely committable
-
-## Key Files in This Directory
-| File | Description |
-|---|---|
-| `DATACARD.md` | This file |
-| `v2.1_baseline_sliding_window.py` | Baseline sliding window with resting-state calibration attempt |
-| `v2.0_baseline_full_trial.py` | Full-trial baseline (earliest complete attempt) |
-| `runpod_eda.py` | RunPod EDA script (execution failed due to pathing resolution) |
-| `phase5/` | Phase 5 LOSO semantic pipeline scripts |
+## Files Kept
+Only this datacard is kept in the public candidate folder. Runtime scripts and intermediate baseline attempts were archived.
