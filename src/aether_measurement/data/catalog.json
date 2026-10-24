@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "selection": "compact_empirical_synthetic_and_observation_calibration",
+  "claim_boundary": "ROAMM classification aggregates plus synthetic/calibration records; no human pre-report-state demonstration.",
+  "copy_policy": "Byte-identical source JSON/CSV; no numeric transformations.",
+  "assets": [
+    {
+      "id": "synthetic_temporal",
+      "file": "synthetic_temporal.json",
+      "source": "03_In_Silico_Instrument_And_Power/Radiology_Gestalt_Validation/outputs/stage1f_temporal_controls_30x70/stage1f_temporal_controls.json",
+      "sha256": "1868652ef431f423f33fde8b661e258df104e13b2b35be53c995089a771f2f32",
+      "bytes": 182694,
+      "format": "json",
+      "layer": "synthetic_instrument",
+      "status": "replicate_rows_and_summary"
+    },
+    {
+      "id": "synthetic_behavior",
+      "file": "synthetic_behavior.json",
+      "source": "03_In_Silico_Instrument_And_Power/Radiology_Gestalt_Validation/outputs/stage1g_behavior_baselines_30x70/stage1g_behavior_baselines.json",
+      "sha256": "d69cd3615f9500cb1ed8c37068d31122e45f3acf2c406391139f486063eb035c",
+      "bytes": 216421,
+      "format": "json",
+      "layer": "synthetic_instrument",
+      "status": "replicate_rows_and_summary"
+    },
+    {
+      "id": "synthetic_power",
+      "file": "synthetic_power.json",
+      "source": "03_In_Silico_Instrument_And_Power/Radiology_Gestalt_Validation/outputs/stage3_channel_sensitivity_30x70/channels_28/stage3_power_curve.json",
+      "sha256": "f59b31c6640c4888c235df2854c28ac9370607d1aa7fe53a2a4eb0b9aace7dd9",
+      "bytes": 1734,
+      "format": "json",
+      "layer": "synthetic_instrument",
+      "status": "saved_power_summary"
+    },
+    {
+      "id": "phase4_manifest",
+      "file": "phase4_manifest.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/manifest.json",
+      "sha256": "b8c54e02bf17ab3ed6baec3c6abdc144826fc11125ee22f3526c06d8c7781bdc",
+      "bytes": 3413,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_aggregate_surface"
+    },
+    {
+      "id": "phase4_auc_readout_surface",
+      "file": "phase4_auc_readout_surface.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/auc_readout_surface.json",
+      "sha256": "20595af812f0b258507508cc82f6dfd4dc688e9b5390b50a1fcbdceff8009114",
+      "bytes": 10316,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_aggregate_surface"
+    },
+    {
+      "id": "phase4_gate_surface",
+      "file": "phase4_gate_surface.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/gate_surface.json",
+      "sha256": "74d31194116304c6cded14bba26ef03af1f473ecaf48598625ac90bd761dccf2",
+      "bytes": 3958,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_aggregate_surface"
+    },
+    {
+      "id": "phase4_incremental_effect_surface",
+      "file": "phase4_incremental_effect_surface.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/incremental_effect_surface.json",
+      "sha256": "64ee44ac2e9e89b4bec4fd001fb08cec3de7fd10f40c552c9205f2eec80dac97",
+      "bytes": 13137,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_aggregate_surface"
+    },
+    {
+      "id": "phase4_observation_cost_surface",
+      "file": "phase4_observation_cost_surface.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/observation_cost_surface.json",
+      "sha256": "1c6775a97a90f6d92a60b188e8a1526655386b5ddd23fa7c2e1f775a493bc2b9",
+      "bytes": 3308,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_aggregate_surface"
+    },
+    {
+      "id": "phase4_utility_surface",
+      "file": "phase4_utility_surface.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/utility_surface.json",
+      "sha256": "299419613a6b014164f31cefec53efff2ad7bde9243f74c5a315ec80876ac882",
+      "bytes": 12733,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_aggregate_surface"
+    },
+    {
+      "id": "phase4_observation_contract",
+      "file": "phase4_observation_contract.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/aether_v2_observation_model_contract_v1.json",
+      "sha256": "774344800e85fef3877da63d6c3bfa8a19149738c603d83d233abd0a0cd86912",
+      "bytes": 6414,
+      "format": "json",
+      "layer": "observation_calibration",
+      "status": "saved_model_contract"
+    },
+    {
+      "id": "phase4_utility_target",
+      "file": "phase4_utility_target.json",
+      "source": "cogitate01/runpod_preprocessing/derived/aether_v2_utility_gate_v1/utility_target.json",
+      "sha256": "5008ef90b7b0f171dece26a04bc50b169c2044d6a1181665924805e91d63d813",
+      "bytes": 185,
+      "format": "json",
+      "layer": "utility_calibration",
+      "status": "assumed_utility_target"
+    },
+    {
+      "id": "empirical_eye_summary",
+      "file": "empirical_eye_summary.csv",
+      "source": "files/roamm_local_reference_tests_no_time/summary.csv",
+      "sha256": "95633c09b7cca18e8635e20562cb0424a0fa32c69552f32ab3c77ebc50353ee9",
+      "bytes": 354,
+      "format": "csv",
+      "rows": 2,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "pooled_prediction_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_eye_reference_tests.py",
+      "source_script_sha256": "39efa06df13f6e70d8a828da758675ba440e443c00daef3a971a86b10a2c8fa2"
+    },
+    {
+      "id": "empirical_eye_calibration",
+      "file": "empirical_eye_calibration.csv",
+      "source": "files/roamm_local_reference_tests_no_time/calibration_cost_summary.csv",
+      "sha256": "0e18a4749ceec88ef05424d63eec6c43bc6cd3da91845726adad06cd2bc05999",
+      "bytes": 842,
+      "format": "csv",
+      "rows": 5,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "mean_subject_repeat_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_eye_reference_tests.py",
+      "source_script_sha256": "39efa06df13f6e70d8a828da758675ba440e443c00daef3a971a86b10a2c8fa2"
+    },
+    {
+      "id": "empirical_eeg_summary",
+      "file": "empirical_eeg_summary.csv",
+      "source": "files/roamm_riemann_eeg10s/riemann_summary.csv",
+      "sha256": "b9e036da3bf3e27c50c412708ff4fb4a6018813b7a98aa5099f063a521adb8ff",
+      "bytes": 371,
+      "format": "csv",
+      "rows": 2,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "pooled_prediction_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_riemann_eeg10s_tests.py",
+      "source_script_sha256": "63b6025cb211cfe70c27ec1f9d85a267cbe461b62fca2514f9f24089bc5072eb"
+    },
+    {
+      "id": "empirical_eeg_calibration",
+      "file": "empirical_eeg_calibration.csv",
+      "source": "files/roamm_riemann_eeg10s/riemann_calibration_cost_summary.csv",
+      "sha256": "c7f9b6bbb522eac49338029ebbc1d0a6223df17bc2dd0dea23129709d09f2800",
+      "bytes": 799,
+      "format": "csv",
+      "rows": 5,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "mean_subject_repeat_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_riemann_eeg10s_tests.py",
+      "source_script_sha256": "63b6025cb211cfe70c27ec1f9d85a267cbe461b62fca2514f9f24089bc5072eb"
+    },
+    {
+      "id": "empirical_eeg_within_summary",
+      "file": "empirical_eeg_within_summary.csv",
+      "source": "files/roamm_riemann_eeg10s/riemann_within_subject_broadband_summary.csv",
+      "sha256": "a5efe3cc5eb86606800ea3b9877b6fe3624cca9c5ece6969ed3caa32017c6949",
+      "bytes": 227,
+      "format": "csv",
+      "rows": 1,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "pooled_prediction_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_riemann_within_subject_broadband.py",
+      "source_script_sha256": "f0dabac9bc0a195fdecc6732a605ea6d92c371ef96e6ceecb575524fea0226ba"
+    },
+    {
+      "id": "empirical_filterbank_summary",
+      "file": "empirical_filterbank_summary.csv",
+      "source": "files/roamm_riemann_filterbank_eeg10s/filterbank_summary.csv",
+      "sha256": "e19d9eb02f98e29674b02e04b100776de118bd2a19189b0c8c0df12e0f73ee0a",
+      "bytes": 375,
+      "format": "csv",
+      "rows": 2,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "pooled_prediction_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_riemann_filterbank_eeg10s.py",
+      "source_script_sha256": "ce4375447f43720a4f00e959314c6ca64c9ef2dd53d5131904c4b3c438bdaa20"
+    },
+    {
+      "id": "empirical_filterbank_calibration",
+      "file": "empirical_filterbank_calibration.csv",
+      "source": "files/roamm_riemann_filterbank_eeg10s/filterbank_calibration_cost_summary.csv",
+      "sha256": "e15bf76548757189ebc0f137b8a64e6a41961298bee682beb15e2a1e939f056c",
+      "bytes": 841,
+      "format": "csv",
+      "rows": 5,
+      "layer": "empirical_ROAMM",
+      "status": "saved_aggregate_not_raw_reanalysis",
+      "aggregation": "mean_subject_repeat_metrics",
+      "source_script": "02_Empirical_Requirement_Probes/ROAMM_ds007629/scripts/roamm_riemann_filterbank_eeg10s.py",
+      "source_script_sha256": "ce4375447f43720a4f00e959314c6ca64c9ef2dd53d5131904c4b3c438bdaa20"
+    }
+  ],
+  "reported_unreproduced": [
+    {
+      "id": "correspondence_full_grid",
+      "status": "reported_unreproduced",
+      "source": "04_Correspondence_Identifiability/Synthetic_Geometry_Benchmark/DATACARD04.md",
+      "reason": "Full-grid numerical outputs are not included or independently replayed."
+    },
+    {
+      "id": "HCP_Nback_MEG",
+      "status": "reported_unreproduced",
+      "source": "01_Falsification_Ledger/HCP_Nback_MEG/DATACARD00.md",
+      "reason": "Historical HCP findings remain context; raw/subject-level arrays and numeric reanalysis are not bundled."
+    }
+  ]
+}

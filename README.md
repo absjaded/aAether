@@ -1,62 +1,162 @@
-# Aether: Public Evidence Ledger
+# Aether
 
-Aether studies the brief interval where a judgment exists before it becomes a sentence, a button press, or an after-the-fact explanation.
+Measuring the structure of a judgment before it becomes a report.
 
-This repository is the public evidence ledger: public-data probes, in-silico instrument checks, datacards, result summaries, and a small behavioral-ledger runtime. It is not an operating protocol.
+A person's answer is an observable outcome. The neural activity preceding it
+may contain additional structure, mixed with preparation to respond, task
+difficulty and individual variation. Aether investigates whether that structure
+can be isolated and made computationally usable.
 
-## Public Claim Discipline
+This repository brings together selected experiments and portable measurement
+tools from that investigation: covariance-based readouts, signal and confound
+constructions, saved results, and behavioral collection tools.
 
-What this repo supports:
+## The measurement problem
 
-- Public neural datasets were useful as filters: most available paradigms entangle state, response, timing, or task design.
-- The synthetic radiology program recovers a planted pre-report gestalt axis under matched nulls and quantifies calibration and response-confound limits.
-- Public proxy probes show why cheap observable behavior has to be measured first: ROAMM eye/reading transfers across subjects, while tested EEG covariance geometry stays weak.
-- The correspondence benchmark maps when shared latent structure can transfer across spaces and when measured anchors are needed.
-- COGITATE/TRIBE work supplied a real-cortex-shaped fMRI observation channel for calibration, not a claim that COGITATE measures Aether's target state.
-- The public runtime checks whether behavioral ledgers and cheap-observable baselines are clean before any neural claim is attempted.
+A readout can predict a label for the wrong reason. Aether makes those alternative
+explanations part of the experiment: compare a candidate neural readout against
+response measures, cheap behavioral predictors and time-related controls.
 
-What this repo does not contain:
+For trial covariance $C_{s,t}$, the portable instrument first removes a subject's
+average covariance scale and maps the remaining geometry into matrix-log features:
 
-- Raw neural datasets, synced derivatives, tensor caches, credentials, or execution logs.
-- Private collection designs or subject-facing task materials.
-- A claim that public data has already solved Aether's biological measurement problem.
+$$
+R_s = \frac{1}{T_s}\sum_t C_{s,t},
+\qquad
+x_{s,t} = \mathrm{vec}_{\mathrm{sym}}\!\left[
+\log\!\left(R_s^{-1/2}C_{s,t}R_s^{-1/2}\right)\right].
+$$
 
-## Folder Map
+A classifier then scores held-out subjects. Each subject supplies an unlabelled
+batch for the reference $R_s$; PCA, scaling and classifier fitting use training
+subjects only. The implementation is in [geometry.py](src/aether_measurement/geometry.py)
+and [instrument.py](src/aether_measurement/instrument.py).
 
-| Folder | Role | Main finding |
+## What the experiments established
+
+The earlier **HCP N-back MEG investigation** built a within-subject measurement:
+geometric distance from a person's Target reference, with reference-stability,
+response-time and spatial controls. It then tested whether Lure trials separated
+from Non-Target trials when both required withholding a response. The reported
+control failed to support the intended judgment-specific interpretation of the
+initial Lure-versus-Target separation. This established a concrete limitation of
+the tested measurement and motivated separating target structure from response
+demands. [METHODS.md](METHODS.md#hcp-n-back-meg) describes the historical evidence
+and outstanding checks. The portable classifier above is a separate analysis;
+it does not replay the HCP distance experiment.
+
+In the ROAMM public dataset, the saved no-time eye/reading readout achieved
+pooled held-out-subject AUC **0.794**. The tested broadband and filterbank EEG
+covariance readouts achieved **0.518** and **0.552**. These are parallel probes
+with different windows and usable trial counts; the EEG readouts also use
+unlabelled held-out-subject calibration. Their contrast motivated measuring
+cheap behavior before assigning a neural interpretation. The packaged aggregate
+CSVs preserve the results and split labels; [METHODS.md](METHODS.md) explains
+the comparison.
+
+The saved synthetic experiments show both recovery and failure modes:
+
+| Construction | Saved result | What it tells us |
 |---|---|---|
-| `01_Falsification_Ledger/` | Public-data kill reasons. | Prior public paradigms do not isolate state from response/timing confounds. |
-| `02_Empirical_Requirement_Probes/ROAMM_ds007629/` | Human public proxy probe. | Eye/reading transfers cross-subject; tested EEG geometry is weak. |
-| `02_Empirical_Requirement_Probes/IBL_RepeatedSite/` | Public neural geometry requirement probe. | GW recovery stays weak/high-degenerate under the tested 100 ms pre-movement setup. |
-| `03_In_Silico_Instrument_And_Power/Radiology_Gestalt_Validation/` | Synthetic instrument, calibration, power, and confound limits. | Cohort-backbone detector works in silico under the tested weak-effect regime. |
-| `04_Correspondence_Identifiability/Synthetic_Geometry_Benchmark/` | Cross-space correspondence benchmark. | 38 / 54 cells transfer correspondence-free; symmetric low-information regimes need 1-2 true anchors. |
-| `90_Legacy_Synthetic_Validation/Synthetic_Validation/` | Earlier synthetic sanity checks. | Retained as historical instrument validation, not the main positive evidence. |
-| `public_aether_runtime/` | Minimal behavioral-ledger runtime. | Validates event/covariate/ground-truth ledgers and estimates whether cheap observables already explain the target label. |
+| Planted covariance signal | Mean readout AUC **0.732**; cheap behavioral baseline **0.493** | The instrument can recover a planted distinction without relying on those cheap predictors. |
+| Matched independent null | Mean readout AUC **0.507** | Removing the planted signal removes the useful separation in this control. |
+| Time-confounded null | Apparent AUC **0.712**, falling to **0.490** after detrending | Time structure alone can create a convincing false result. |
+| Response-label entanglement | Both covariance and cheap readouts rise as their dependence increases | Geometrically distinct activity can still carry the target label through a confound. |
 
-## Key Numbers
+These are historical runs, with 30 synthetic subjects and 70 trials per subject.
+The temporal experiment contains 108 replicate records; the behavioral comparison
+contains 144. `records` checks their integrity and recomputes the saved summaries.
+The small `demo` below runs fresh constructions with a separate, portable protocol.
 
-| Probe | Result |
-|---|---|
-| HCP 2-back motor-confound check | Lure vs Non-Target shared the same withheld response; geodesic gap was near zero: delta d = +0.0033, Cohen d = +0.008, p = 0.75. |
-| ROAMM eye/reading 39-to-1 | Held-out-subject AUC about 0.81 with run/time features, about 0.79 without them. |
-| ROAMM 10 s EEG covariance | Shared-reference AUC about 0.52 broadband and about 0.55 filter-bank. |
-| IBL RepeatedSite | Corrected 100 ms label sweep remained close to null with high coupling degeneracy. |
-| Radiology weak-effect sizing | Effect 0.07 was used as the synthetic sizing target under matched nulls. |
-| Radiology N4 confound | Clean through response-label correlation rho 0.1, unstable around 0.2, broken by 0.3. |
-| Aether correspondence | `world_b=38`, `world_a_1=12`, `world_a_2=4`, `paired_only=0`, `representation_limit=0`. |
-| COGITATE/TRIBE fMRI calibration | TRIBE tracked category-level fMRI geometry in posterior cortex at about r = 0.483 against a high run-split ceiling; the branch was kept as calibration substrate, not as a human-state result. |
-| fMRI-shaped utility gate | Under the tested fMRI observation channel, methodological recovery appeared before scanner-grade second-look utility; the near-term route moved back to dedicated collection design. |
+Later observation-model experiments used COGITATE/TRIBE-derived calibration to
+ask how measurement reliability changes the usefulness of a planted signal.
+Under the primary reliability setting, the best tested combined readout reached
+AUC **0.620**, corresponding to a modeled **1.63×** enrichment. The specified
+**2×** target required AUC **0.678** under the assumed score model. This gives a
+concrete observation-cost constraint for designing the next measurement.
 
-## Public Data Sources
+## Run it
 
-| Source | Used for | Link |
-|---|---|---|
-| COGITATE data release | Multimodal fMRI, M-EEG, iEEG/ECoG, behavior, and eye-tracking substrate. Data access is through COGITATE and subject to its terms. | https://www.arc-cogitate.com/data-release |
-| COGITATE data documentation | Release notes and modality documentation. V1.3 includes raw and BIDS fMRI data for Experiment 1. | https://cogitate-consortium.github.io/cogitate-data/01_intro/ |
-| COGITATE fMRI analysis code | Reference analysis pipeline and demo data description. | https://github.com/Cogitate-consortium/cogitate-fmri-analysis |
+Python 3.10 or newer, on an ordinary CPU:
 
-## Data Policy
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+python -m pip install -e ".[test]"
+python -m pytest -q
 
-Raw datasets, synced derivatives, tensor caches, credentials, SSH details, local execution logs, private notes, and collection planning material are not part of the clean evidence package.
+# Fresh signal, independent-null, response-only and entangled-response trials.
+aether-measurement demo --out runs/demo.json --save-trials runs/trials
 
-Dataset links and redistribution notes live in the per-probe datacards or run cards.
+# Run the same measurement pipeline on one saved construction.
+aether-measurement measure --input runs/trials/signal.npz --out runs/measurement.json
+
+# Verify and reaggregate the packaged historical records.
+aether-measurement records --out runs/record-check.json
+```
+
+The demo reports covariance-readout and response-proxy AUC side by side. In the
+entangled construction, the response axis is orthogonal to the generator's
+signal axis and no target signal is planted. Its scalar drive still correlates
+with the label. This is the distinction
+between geometric separation and statistical independence.
+
+### Analyze your own covariance trials
+
+Prepare an NPZ containing `covariances` with shape `(trials, channels, channels)`,
+binary `labels` with shape `(trials,)`, and matching `subjects` identifiers.
+Matrices must be symmetric and strictly positive definite; any regularization
+belongs in your declared preprocessing. The package accepts compatible empirical
+inputs as well as constructed data.
+
+```python
+import numpy as np
+from aether_measurement.instrument import measure
+
+with np.load("covariance_trials.npz", allow_pickle=False) as data:
+    result = measure(data["covariances"], data["labels"], data["subjects"])
+
+print(result["auc"])
+# Original-row-order held-out scores and fold assignments are also available.
+scores, fold_ids = result["scores"], result["fold_ids"]
+```
+
+### Prepare a behavioral pilot
+
+The collection tools join event timing, behavioral covariates and ground truth
+through trial identifiers. Start with blank templates:
+
+```bash
+aether-measurement ledger init --out runs/pilot
+```
+
+After collecting and completing the three CSV ledgers:
+
+```bash
+aether-measurement ledger validate --event runs/pilot/event_ledger.csv --covariate runs/pilot/covariate_ledger.csv --ground-truth runs/pilot/ground_truth_ledger.csv
+aether-measurement baseline --event runs/pilot/event_ledger.csv --covariate runs/pilot/covariate_ledger.csv --ground-truth runs/pilot/ground_truth_ledger.csv --out runs/baseline.json
+```
+
+The baseline validates before scoring and includes trials only when both
+usability flags are true. Its inherited trial-level cross-validation differs
+from the covariance instrument's subject holdout. Small samples and undefined
+targets receive explicit report states.
+
+## Scope and next experiment
+
+The contribution is a measurement investigation: implemented analyses, empirical
+specificity checks, controlled recovery and confound experiments, and a collection
+specification. The central empirical question remains whether a stable pre-report
+judgment distinction can survive those controls in a purpose-designed collection.
+Behavioral calibration is the next scientific dependency. This repository
+consolidates the existing work; it does not launch that collection.
+
+[METHODS.md](METHODS.md) details the empirical evidence, calibration assumptions,
+historical provenance and changes made for this portable implementation. The
+[evidence catalog](src/aether_measurement/data/catalog.json) identifies each
+packaged source artifact.
+
+The software uses the [Apache-2.0 license](LICENSE). The
+[earlier research layout](https://github.com/absjaded/aAether/tree/86f199716eed5a269409f7be72a78be867995dad)
+is preserved in Git history, including the exploratory scripts and datacards.

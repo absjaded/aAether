@@ -1,0 +1,63 @@
+{
+  "analysis": "Stage 3 simulation power curve for cohort-backbone detector",
+  "config": {
+    "effects": [
+      0.07
+    ],
+    "violation_rates": [
+      0.08
+    ],
+    "subjects_values": [
+      30
+    ],
+    "trials_values": [
+      70
+    ],
+    "channels": 28,
+    "components": 24,
+    "response_effect": 0.24,
+    "reps": 24,
+    "criterion": "stage3_powered if weak-real power >= 0.80, null false positive <= 0.05, null clean rate >= 0.90"
+  },
+  "recommendations": [
+    {
+      "effect": 0.07,
+      "violation_rate": 0.08,
+      "recommendation": "powered",
+      "subjects": 30,
+      "trials": 70,
+      "total_reads": 2100,
+      "expected_violations_per_subject": 5.6000000000000005,
+      "mean_signal_d": 0.9894749662886976,
+      "mean_signal_auc": 0.7320475733463816,
+      "signal_power_weak": 0.9583333333333334,
+      "null_false_positive_weak": 0.0
+    }
+  ],
+  "rows": [
+    {
+      "effect": 0.07,
+      "violation_rate": 0.08,
+      "subjects": 30,
+      "trials": 70,
+      "total_reads": 2100,
+      "expected_violations_per_subject": 5.6000000000000005,
+      "channels": 28,
+      "components": 24,
+      "reps": 24,
+      "signal_power_weak": 0.9583333333333334,
+      "signal_power_strong": 0.2916666666666667,
+      "null_false_positive_weak": 0.0,
+      "null_clean_rate": 1.0,
+      "mean_signal_auc": 0.7320475733463816,
+      "mean_signal_d": 0.9894749662886976,
+      "mean_signal_p": 0.000244081034903588,
+      "mean_null_auc": 0.49714457410276297,
+      "mean_null_d": -0.00572219218796043,
+      "mean_subjects_valid": 29.916666666666668,
+      "mean_subjects_in_direction": 28.375,
+      "mean_observed_violation_rate": 0.08097222222222222,
+      "verdict": "stage3_powered"
+    }
+  ]
+}

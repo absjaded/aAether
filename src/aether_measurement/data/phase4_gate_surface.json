@@ -1,0 +1,101 @@
+{
+  "axes": [
+    "rho",
+    "time_order_mode"
+  ],
+  "framing": "Synthetic result surface shaped by Cogitate/TRIBE fMRI observation constraints. This is instrument behavior, not a human phenomenon result.",
+  "generated_at": "2026-07-31T03:34:57+00:00",
+  "grid": {
+    "leakage": [
+      {
+        "false_state_accept_rate": 0.025,
+        "gate": "leakage",
+        "gate_pass": true,
+        "leakage_flag_rate": 0.23125,
+        "null_separation_median": 0.2279520257006073,
+        "recovery_median": -0.033127609273635936,
+        "residualized_separation_median": 0.2280752256908561,
+        "response_label_corr_median": 0.017446510683670844,
+        "response_rdm_corr_median": 0.06278021378833193,
+        "rho": 0.0,
+        "separation_median": 0.22944467608979963
+      },
+      {
+        "false_state_accept_rate": 0.03125,
+        "gate": "leakage",
+        "gate_pass": true,
+        "leakage_flag_rate": 0.29375,
+        "null_separation_median": 0.22462067995558738,
+        "recovery_median": -0.010992597150825616,
+        "residualized_separation_median": 0.22500094880116595,
+        "response_label_corr_median": 0.10000515542736689,
+        "response_rdm_corr_median": 0.15534363321680317,
+        "rho": 0.1,
+        "separation_median": 0.22906386353557323
+      },
+      {
+        "false_state_accept_rate": 0.0,
+        "gate": "leakage",
+        "gate_pass": true,
+        "leakage_flag_rate": 0.98125,
+        "null_separation_median": 0.22924015055915758,
+        "recovery_median": 0.008738964291923655,
+        "residualized_separation_median": 0.22425643420185265,
+        "response_label_corr_median": 0.20105361665833385,
+        "response_rdm_corr_median": 0.1232716596884301,
+        "rho": 0.2,
+        "separation_median": 0.2287116209516757
+      },
+      {
+        "false_state_accept_rate": 0.0,
+        "gate": "leakage",
+        "gate_pass": true,
+        "leakage_flag_rate": 1.0,
+        "null_separation_median": 0.2281802400525115,
+        "recovery_median": -0.08576871529579697,
+        "residualized_separation_median": 0.2250684156907381,
+        "response_label_corr_median": 0.2988734541770669,
+        "response_rdm_corr_median": 0.2545958683533651,
+        "rho": 0.3,
+        "separation_median": 0.23328060101402487
+      }
+    ],
+    "time_order": [
+      {
+        "gate": "time_order",
+        "gate_pass": true,
+        "mode": "balanced",
+        "raw_recovery_median": 0.49905255590719877,
+        "raw_separation_median": 0.3396363669657775,
+        "time_adjusted_recovery_median": 0.5542387148509773,
+        "time_adjusted_separation_median": 0.3395322125071078,
+        "time_flag_rate": 0.0,
+        "time_label_corr_median": 0.014328275383968692,
+        "time_rdm_corr_median": -0.04119445813435289
+      },
+      {
+        "gate": "time_order",
+        "gate_pass": true,
+        "mode": "imbalanced",
+        "raw_recovery_median": 0.4820865841773144,
+        "raw_separation_median": 0.35859797548939853,
+        "time_adjusted_recovery_median": -0.058798955644373,
+        "time_adjusted_separation_median": 0.2765441371547961,
+        "time_flag_rate": 1.0,
+        "time_label_corr_median": 0.9681865551948832,
+        "time_rdm_corr_median": 0.3273996803869752
+      }
+    ]
+  },
+  "modality": "fMRI-shaped synthetic observation channel",
+  "notes": {
+    "leakage_rule": "Clean at rho <= 0.1; at rho >= 0.2 the gate fires rather than letting a state claim survive.",
+    "time_order_rule": "Balanced schedule stays quiet; imbalanced schedule fires."
+  },
+  "source_files": [
+    "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_leakage_sweep.tsv",
+    "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_time_order_gate.tsv"
+  ],
+  "surface_id": "phase4.gates.leakage_time",
+  "title": "Leakage and time/order gate surface"
+}

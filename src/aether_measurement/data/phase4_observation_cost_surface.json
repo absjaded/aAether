@@ -1,0 +1,78 @@
+{
+  "axes": [
+    "scenario"
+  ],
+  "framing": "Synthetic result surface shaped by Cogitate/TRIBE fMRI observation constraints. This is instrument behavior, not a human phenomenon result.",
+  "generated_at": "2026-07-31T03:34:57+00:00",
+  "grid": [
+    {
+      "auc": 0.5267592592592593,
+      "auc_drop_from_no_observation_cost": 0.47324074074074074,
+      "cheap_auc": 0.4980392156862745,
+      "description": "uncorrected reliability times TRIBE gap with correlated parcel residual noise",
+      "no_state_auc": 0.4981063907044299,
+      "no_state_rdm_recovery": -0.061507683128135704,
+      "null_auc": 0.49822803195352217,
+      "rdm_drop_from_no_observation_cost": 0.5322192225278668,
+      "rdm_null_recovery": 0.0011497339184711691,
+      "rdm_recovery": 0.46768999523326205,
+      "scenario": "primary_conservative",
+      "scenario_order": 0
+    },
+    {
+      "auc": 1.0,
+      "auc_drop_from_no_observation_cost": 0.0,
+      "cheap_auc": 0.5010748002904866,
+      "description": "reliability set to 1.0 and TRIBE gap off",
+      "no_state_auc": 0.4980119825708061,
+      "no_state_rdm_recovery": 0.03925158628256914,
+      "null_auc": 0.499936456063907,
+      "rdm_drop_from_no_observation_cost": 0.0,
+      "rdm_null_recovery": -0.03370632181218368,
+      "rdm_recovery": 0.9999092177611288,
+      "scenario": "no_observation_cost",
+      "scenario_order": 1
+    },
+    {
+      "auc": 0.5756336238198982,
+      "auc_drop_from_no_observation_cost": 0.42436637618010176,
+      "cheap_auc": 0.5002650689905592,
+      "description": "uncorrected reliability with TRIBE gap off",
+      "no_state_auc": 0.4995751633986928,
+      "no_state_rdm_recovery": 0.01846273843010334,
+      "null_auc": 0.5008006535947713,
+      "rdm_drop_from_no_observation_cost": 0.3448002655970853,
+      "rdm_null_recovery": 0.057185649245299695,
+      "rdm_recovery": 0.6551089521640435,
+      "scenario": "reliability_only",
+      "scenario_order": 2
+    },
+    {
+      "auc": 0.5852469135802469,
+      "auc_drop_from_no_observation_cost": 0.41475308641975306,
+      "cheap_auc": 0.5020043572984749,
+      "description": "uniform TRIBE gap with reliability off",
+      "no_state_auc": 0.5027051561365288,
+      "no_state_rdm_recovery": 0.07240303039036364,
+      "null_auc": 0.5007171387073348,
+      "rdm_drop_from_no_observation_cost": 0.24631948474456933,
+      "rdm_null_recovery": 0.017190732437910812,
+      "rdm_recovery": 0.7535897330165595,
+      "scenario": "tribe_only_uniform",
+      "scenario_order": 3
+    }
+  ],
+  "modality": "fMRI-shaped synthetic observation channel",
+  "notes": {
+    "decision": "Observation cost is material under the fMRI-shaped channel.",
+    "observation_channel": "reliability-weighted Cogitate residual envelope plus TRIBE gap",
+    "plant_channel": "uniform independent synthetic state geometry",
+    "tribe_gap": 0.4848608062092797
+  },
+  "source_files": [
+    "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_observation_cost_ablation.tsv",
+    "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/aether_v2_observation_model_contract_v1.json"
+  ],
+  "surface_id": "phase4.observation.cost",
+  "title": "Observation-channel cost and ablation surface"
+}

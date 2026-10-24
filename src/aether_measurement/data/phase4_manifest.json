@@ -1,0 +1,73 @@
+{
+  "decision": "Phase 4 fMRI-shaped route is closed as calibration substrate; Phase 5 dedicated human elicitation is next.",
+  "framing": "Synthetic result surface shaped by Cogitate/TRIBE fMRI observation constraints. This is instrument behavior, not a human phenomenon result.",
+  "generated_at": "2026-07-31T03:34:57+00:00",
+  "modality": "fMRI-shaped synthetic observation channel",
+  "summary_numbers": {
+    "best_primary_uncorrected_auc": 0.620269607843137,
+    "best_primary_uncorrected_effect": 0.28,
+    "best_primary_uncorrected_lift": 1.6341606849026222,
+    "best_spearman_brown_auc": 0.648063725490196,
+    "best_spearman_brown_effect": 0.28,
+    "best_spearman_brown_lift": 1.8059913167733164,
+    "cheap_behavior_auc": 0.55546160130719,
+    "primary_uncorrected_first_power_pass_effect": 0.24,
+    "spearman_brown_first_power_pass_effect": 0.2,
+    "target_auc_for_2x_lift": 0.6776434779883849
+  },
+  "surface_set": "aether_phase4_result_surfaces_v1",
+  "surfaces": [
+    {
+      "file": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/utility_surface.json",
+      "rows": 17,
+      "source_files": [
+        "cogitate01/runpod_preprocessing/derived/aether_v2_utility_gate_v1/utility_gate_table.tsv",
+        "cogitate01/runpod_preprocessing/derived/aether_v2_utility_gate_v1/utility_target.json"
+      ],
+      "surface_id": "phase4.utility.second_look"
+    },
+    {
+      "file": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/incremental_effect_surface.json",
+      "rows": 17,
+      "source_files": [
+        "cogitate01/runpod_preprocessing/derived/aether_v2_elicitation_incremental_rollup_v1/incremental_effect_sweep.tsv"
+      ],
+      "surface_id": "phase4.incremental.effect_sweep"
+    },
+    {
+      "file": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/observation_cost_surface.json",
+      "rows": 4,
+      "source_files": [
+        "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_observation_cost_ablation.tsv",
+        "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/aether_v2_observation_model_contract_v1.json"
+      ],
+      "surface_id": "phase4.observation.cost"
+    },
+    {
+      "file": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/gate_surface.json",
+      "rows": 6,
+      "source_files": [
+        "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_leakage_sweep.tsv",
+        "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_time_order_gate.tsv"
+      ],
+      "surface_id": "phase4.gates.leakage_time"
+    },
+    {
+      "file": "cogitate01/runpod_preprocessing/derived/aether_phase4_result_surfaces_v1/auc_readout_surface.json",
+      "rows": 28,
+      "source_files": [
+        "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/v2_auc_readout.tsv",
+        "cogitate01/runpod_preprocessing/derived/aether_v2_observation_model_v1/aether_v2_observation_model_contract_v1.json"
+      ],
+      "surface_id": "phase4.readout.auc_rdm"
+    }
+  ],
+  "utility_target": {
+    "base_rate": 0.08,
+    "flag_rate": 0.2,
+    "target_auc": 0.6776434779883849,
+    "target_lift": 2.0,
+    "target_precision": 0.16000000000000006,
+    "target_recall": 0.40000000000000013
+  }
+}

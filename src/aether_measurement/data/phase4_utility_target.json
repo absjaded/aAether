@@ -1,0 +1,8 @@
+{
+  "base_rate": 0.08,
+  "flag_rate": 0.2,
+  "target_lift": 2.0,
+  "target_auc": 0.6776434779883849,
+  "target_precision": 0.16000000000000006,
+  "target_recall": 0.40000000000000013
+}
