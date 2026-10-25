@@ -143,6 +143,10 @@ usability flags are true. Its inherited trial-level cross-validation differs
 from the covariance instrument's subject holdout. Small samples and undefined
 targets receive explicit report states.
 
+The [relation to existing work](METHODS.md#relation-to-existing-work) connects
+the instrument to covariance-based BCI decoding, subject alignment and
+controlled tests of what drives a prediction.
+
 ## Scope and next experiment
 
 The contribution is a measurement investigation: implemented analyses, empirical

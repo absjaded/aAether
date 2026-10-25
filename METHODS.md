@@ -141,6 +141,46 @@ The parameter is a latent construction coefficient; it is not guaranteed to equa
 the realized finite-sample Pearson correlation after all transformations. Neither
 the demo nor the saved synthetic records are observations of a human state.
 
+## Relation to existing work
+
+Covariance-based BCI decoding has an established geometric foundation.
+[Barachant et al. (2012)](https://pubmed.ncbi.nlm.nih.gov/22010143/)
+classify EEG covariance matrices using their positive-definite geometry and
+tangent-space features. Aether's portable instrument uses an arithmetic-mean
+subject reference, whitening, matrix-log coordinates and a grouped readout.
+It combines established measurement tools with a specific investigation of
+judgment-related information.
+
+The whitening step has the same covariance transformation as
+[Euclidean Alignment](https://arxiv.org/abs/1808.05464)
+(He and Wu, 2020): the subject's mean covariance becomes the identity.
+The [later EA study](https://arxiv.org/abs/2502.09203)
+(Wu, 2025) further examines placement within decoding pipelines. In this
+package, alignment uses each subject's entire supplied unlabelled batch,
+including held-out subjects. Learned PCA, scaling and classifier stages use
+training subjects. This is the declared calibration contract of the instrument.
+
+The substantive measurement question is what drives a successful readout.
+[Snoek et al. (2019)](https://pubmed.ncbi.nlm.nih.gov/30268846/)
+show how confound-control choices and their placement in cross-validation can
+bias decoding results. Aether examines candidate explanations using behavioral
+comparators, empirical specificity checks and controlled generators; the
+portable instrument does not automatically remove a supplied confound.
+
+The [Same Analysis Approach](https://arxiv.org/abs/1703.06670)
+(Görgen et al., 2018) motivates applying an analysis pipeline to design
+variables, control data and simulations. The four fresh constructions here
+use the same portable instrument to expose recovery, null and response-driven
+behavior. Saved historical experiments retain their own documented protocol.
+In those records, temporal structure produces apparent AUC 0.712, falling to
+0.490 after detrending. The response-entanglement example further distinguishes
+geometrically orthogonal axes from statistically independent variables.
+
+The released contribution is an instrument and an inspectable set of
+measurement tests. The public-data results, controlled examples and calibrated
+observation model each inform the next collection needed to test the intended
+pre-report distinction.
+
 ## Saved instrument experiments
 
 `records` verifies source-file sizes and SHA-256 values before loading the assets.
