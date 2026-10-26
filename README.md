@@ -8,8 +8,8 @@ difficulty and individual variation. Aether investigates whether that structure
 can be isolated and made computationally usable.
 
 This repository brings together selected experiments and portable measurement
-tools from that investigation: covariance-based readouts, signal and confound
-constructions, saved results, and behavioral collection tools.
+tools from that investigation: supervised learning on covariance features,
+signal and confound constructions, saved results, and behavioral collection tools.
 
 ## The measurement problem
 
@@ -27,10 +27,11 @@ x_{s,t} = \mathrm{vec}_{\mathrm{sym}}\!\left[
 \log\!\left(R_s^{-1/2}C_{s,t}R_s^{-1/2}\right)\right].
 $$
 
-A classifier then scores held-out subjects. Each subject supplies an unlabelled
-batch for the reference $R_s$; PCA, scaling and classifier fitting use training
-subjects only. The implementation is in [geometry.py](src/aether_measurement/geometry.py)
-and [instrument.py](src/aether_measurement/instrument.py).
+A logistic-regression classifier predicts trial labels for held-out subjects.
+Each subject supplies an unlabelled batch for the reference $R_s$; PCA, scaling
+and classifier fitting use training subjects only. The implementation is in
+[geometry.py](src/aether_measurement/geometry.py) and
+[instrument.py](src/aether_measurement/instrument.py).
 
 ## What the experiments established
 
